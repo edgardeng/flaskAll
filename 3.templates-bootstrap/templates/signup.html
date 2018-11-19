@@ -1,0 +1,23 @@
+{% import "bootstrap/wtf.html" as wtf %}
+
+{%- extends "base.html" %}
+
+{% block content %}
+   <div class="container">
+      <div class="jumbotron">
+        <h1>Signup for our awesome service</h1>
+        <p>Note: Your data isn't going anywhere.</p>
+      </div>
+   </div>
+
+{% if message %}
+  <p style="color:red">{{ message }}</p>
+{% endif %}
+
+  <form action="/signup" method="post">
+    <legend>Please sign in:</legend>
+    <p><input name="username" placeholder="Username" value="{{ username }}"></p>
+    <p><input name="password" placeholder="Password" type="password" value="{{ password }}"></p>
+    <p><button type="submit">Sign In</button></p>
+  </form>
+{%- endblock %}
