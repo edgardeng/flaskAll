@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+    {{super()}}
+
+    <script >
+
+    function update(id) {
+        var name = $("#name").val();
+        if (name.length < 1) {
+            $('#message').html('please input name');
+            return;
+        }
+        var email = $("#email").val();
+        if (email.length < 1) {
+            $('#message').html('please input email');
+            return;
+        }
+        $('#message').empty();
+        let user = {
+            name, email
+        }
+        let data = JSON.stringify(user);
+        if (id) {
+            $.ajax({
+                url:"/api/user/" + id,
+                type: "PUT",
+                data: data,
+                async: false,
+                dataType: "JSON",
+                contentType: "application/json",
+                success: function(result) {
+                    var user = result.user;
+                    if (user) {
+                         window.location.href="/"
+                    }
+                }
+            })
+        } else {
+            $.ajax({
+                url:"/api/user",
+                type: "POST",
+                data: data,
+                async: false,
+                dataType: "JSON",
+                contentType: "application/json",
+                success: function(result) {
+                    var user = result.user;
+                    if (user) {
+                        window.location.href="/"
+                    }
+                }
+             })
+        }
+    };
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+
+{{super()}}
+
+
+<div class="container">
+    <div class="panel panel-default" style="margin-top:2rem;">
+        <div class="panel-heading">
+            {% if user %} 修改用户
+            {% else %} 新增用户
+            {% endif %}
+        </div>
+        <div class="panel-body">
+            <div>
+
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name"
+                    {% if user %} value="{{user.name}}" {% endif %}
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email"
+                    {% if user %} value="{{user.email}}" {% endif %}
+                    >
+                </div>
+
+                <a type="submit" class="btn btn-default" href="/">取消</a>
+                {% if user %}
+                <button type="submit" class="btn btn-primary "  onclick="update('{{user.id}}')">修改</button>
+                {% else %}
+                <button type="submit" class="btn btn-primary "  onclick="update()">新增</button>
+                {% endif %}
+
+            </div>
+            <p class="bg-danger" id="message"></p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+    {{super()}}
+
+    <script >
+    function onShow(id) {
+                $.ajax({url:"/api/user/" + id,success:function(result) {
+                    console.log(result);
+                    var user = result.user;
+                    var info = '<p class="text-success">'+ user.id+ ', ' + user.name + ', ' + user.email + '</p>';
+                     console.log(info);
+                    $("#modalBody").html(info);
+                    $('#myModal').modal('show');
+                }});
+	};
+
+    function clickDelete(id) {
+        window.userId = id
+        $.ajax({
+            url:"/api/user/" + id,
+            type:"GET",
+            dataType:"json",
+            success:function(result) {
+                var user = result.user;
+                var info = '是否删除' + user.name + '（' + user.email + '）?';
+                $("#modalBody").html(info);
+                $('#myModal').modal('show');
+            }
+        })
+    };
+
+    function onDelete() {
+        var id = window.userId;
+        $.ajax({
+            url:"/api/user/" + id,
+            type:"DELETE",
+            dataType:"json",
+            success:function(result) {
+                if (result.result) {
+                    $('#myModal').modal('hide');
+                    $("#user" + id ).remove();
+                }
+            }
+        })
+    };
+    </script>
+{% endblock %}
+
+{% block content %}
+
+{{super()}}
+
+<div class="container">
+    <div style="text-align:right;padding: 1rem;">
+        <a type="submit" class="btn btn-success" href="/user">添加</a>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Phone</th>
+            <th scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody id="listBody">
+
+        {% for user in users %}
+
+        <tr id="user{{user.id}}">
+            <th scope="row">{{user.id}}</th>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td>
+                <a type="submit" class="btn btn-primary" href="/user/{{user.id}}">修改</a>
+                <button type="submit" class="btn btn-danger" onclick="clickDelete('{{user.id}}')">删除</button>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" >用户详情</h4>
+      </div>
+      <div class="modal-body" >
+          <p class="text-danger" id="modalBody"> </p>
+      </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal"> 取消 </button>
+        <button type="button" class="btn btn-primary" onclick="onDelete()"> 确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
