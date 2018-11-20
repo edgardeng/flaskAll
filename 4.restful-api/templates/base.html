@@ -1,0 +1,13 @@
+{%- extends "bootstrap/base.html" %}
+
+{% block title %}Flask-Restful-API{% endblock %}
+
+{% import "bootstrap/fixes.html" as fixes %}
+
+{% block head %}
+
+{{super()}}
+
+{#- Docs: http://pythonhosted.org/Flask-Bootstrap/macros.html#fixes  #}
+{{fixes.ie8()}}
+{%- endblock %}

@@ -1,0 +1,212 @@
+{%- extends "base.html" %}
+
+{% import "bootstrap/utils.html" as utils %}
+
+{% block head %}
+    {{super()}}
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script >
+    function onShow(id) {
+                $.ajax({url:"/api/user/" + id,success:function(result) {
+                    console.log(result);
+                    var user = result.user;
+                    var info = '<p class="text-success">'+ user.id+ ', ' + user.name + ', ' + user.email + '</p>';
+                     console.log(info);
+                    $("#modalBody").html(info);
+                    $('#myModal').modal('show');
+                }});
+	};
+
+    function onDelete(id) {
+         $.ajax({
+            url:"/api/user/" + id,
+            type:"DELETE",
+            dataType:"json",
+            success:function(result) {
+                if (result.result) {
+                     $("#user" + id ).remove();
+                }
+            }
+         })
+    };
+
+    function onUpdate(id) {
+        $.ajax({
+            url:'/api/user/' + id,
+            success: function(result) {
+                var user = result.user;
+                $('#name').val(user.name);
+                $('#email').val(user.email);
+                $('#updateBtn').removeClass('hidden');
+                window.userId = user.id
+            }
+        });
+    };
+
+    function update() {
+        var name = $("#name").val();
+        if (name.length < 1) {
+            $('#message').html('please input name');
+            return;
+        }
+        var email = $("#email").val();
+        if (email.length < 1) {
+            $('#message').html('please input email');
+            return;
+        }
+        $('#message').empty();
+        let user = {
+            name, email
+        }
+        let id = window.userId;
+        let data = JSON.stringify(user);
+         $.ajax({
+            url:"/api/user/" + id,
+            type: "PUT",
+            data: data,
+            async: false,
+            dataType: "JSON",
+            contentType: "application/json",
+            success: function(result) {
+                var user = result.user;
+                var info = '<th scope="row">' + user.id +
+                           '</th><td>' + user.name +
+                           '</td><td>' + user.email +
+                           '</td>' +
+                           '<td><button type="button" class="btn btn-default" data-toggle="modal" onclick="onShow(' + user.id +
+                           ')">详情</button> <button type="submit" class="btn btn-primary" onclick="onUpdate(' + user.id + ')">修改</button> ' +
+                           '<button type="submit" class="btn btn-danger" onclick="onDelete(' + user.id + ')">删除</button>' +
+                           '</td>'
+                $("#user" + id).empty();
+                $("#user" + id).append(info);
+                $('#updateBtn').addClass('hidden');
+                $('#name').val('');
+                $('#email').val('');
+            }
+         })
+    };
+
+
+    function onAdd() {
+        var name = $("#name").val();
+        if (name.length < 1) {
+            $('#message').html('please input name');
+            return;
+        }
+        var email = $("#email").val();
+        if (email.length < 1) {
+            $('#message').html('please input email');
+            return;
+        }
+        $('#message').empty();
+        let user = {
+            name, email
+        }
+        let data = JSON.stringify(user)
+         $.ajax({
+            url:"/api/user",
+            type: "POST",
+            data: data,
+            async: false,
+            dataType: "JSON",
+            contentType: "application/json",
+            success: function(result) {
+                var user = result.user;
+                var info = '<tr id="user' + user.id +
+                           '"><th scope="row">' + user.id +
+                           '</th><td>' + user.name +
+                           '</td><td>' + user.email +
+                           '</td>' +
+                           '<td><button type="button" class="btn btn-default" data-toggle="modal" onclick="onShow(' + user.id +
+                           ')">详情</button> <button type="submit" class="btn btn-primary" onclick="onUpdate(' + user.id + ')">修改</button> ' +
+                           '<button type="submit" class="btn btn-danger" onclick="onDelete(' + user.id + ')">删除</button>' +
+                           '</td></tr>'
+                $("#listBody").append(info);
+                $('#name').val('');
+                $('#email').val('');
+            }
+         })
+    };
+    </script>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container bg-primary text-white" style="margin-bottom:2rem;padding:2rem;">
+    <div class="row">
+        <h2>Example to Flask-Restful-API</h2>
+    </div>
+</div>
+
+<div class="container">
+    <table class=" table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Phone</th>
+            <th scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody id="listBody">
+
+        {% for user in users %}
+
+        <tr id="user{{user.id}}">
+            <th scope="row">{{user.id}}</th>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td>
+                <button type="button" class="btn btn-default" data-toggle="modal" onclick="onShow({{user.id}})">详情</button>
+                <button type="submit" class="btn btn-primary" onclick="onUpdate({{user.id}})">修改</button>
+                <button type="submit" class="btn btn-danger" onclick="onDelete({{user.id}})">删除</button>
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">编辑用户</div>
+        <div class="panel-body">
+            <div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+
+                <button type="submit" class="btn btn-primary" onclick="onAdd()">添加</button>
+                <button type="submit" class="btn btn-primary hidden" id="updateBtn" onclick="update()">修改</button>
+            </div>
+            <p class="bg-danger" id="message"></p>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" >用户详情</h4>
+      </div>
+      <div class="modal-body" id="modalBody">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- endblock %}
+

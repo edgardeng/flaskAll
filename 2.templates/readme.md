@@ -67,7 +67,8 @@ Hello, Stranger!
 ```
 <ul>
 {% for comment in comments %}
-<li>{{ comment }}</li> {% endfor %}
+<li>{{ comment }}</li>
+ {% endfor %}
 </ul>
 ```
 
