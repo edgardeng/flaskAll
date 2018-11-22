@@ -2,14 +2,14 @@
 
 some demo of flask (python web framework) study
 
-## Environment
+## environment
 
 * Python 3.6
 * Flask 1.0.2
 
-## Demo list for Flask 
+## list for flask demo 
 
-* 1.[Hello World](./1.hello-world) - flask quick start
+* 1.[Hello World](/1.hello-world) - flask quick start
 
 * 2.[Template](./2.templates) - Jinja2 Web Template
 
@@ -31,7 +31,7 @@ some demo of flask (python web framework) study
 
 
 
-## Reference
+## reference
 
 * [Flask](http://flask.pocoo.org/) Website
 
