@@ -29,7 +29,7 @@ NoSQL 数据库放宽了对这种一致性的要求，从而获得性能上的�
 
 ## Flask-SQLAlchemy
 
-> Flask-SQLAlchemy 是一个Flask 扩展. SQLAlchemy 是一个很强大的关系型数据库框架
+> [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/) 是一个Flask 扩展. SQLAlchemy 是一个很强大的关系型数据库框架。[相关文档](http://www.pythondoc.com/flask-sqlalchemy)
 
 __pip 安装:__
 ```
@@ -38,10 +38,10 @@ __pip 安装:__
 
 FLask-SQLAlchemy数据库URL
  
-* MySQL mysql://username:password@hostname/database
-* Postgres postgresql://username:password@hostname/database
-* SQLite(Unix) sqlite:////absolute/path/to/database
-* SQLite(Windows) sqlite:///c:/absolute/path/to/database
+* MySQL             mysql://username:password@hostname/database
+* Postgres          postgresql://username:password@hostname/database
+* SQLite(Unix)      sqlite:////absolute/path/to/database
+* SQLite(Windows)   sqlite:///c:/absolute/path/to/database
 
 ### SQLAlchemy的 常见参数
 选择项	说明
@@ -189,7 +189,7 @@ Users.query.filter_by(id=1).update({'name': name, 'email': email})
 
 ### sqlalchemy的model无法Json格式化
 
-1. 在model中添加序列号函数
+1. 在model中添加序列化函数
 ```python
 class Users(db.Model):
 
@@ -209,7 +209,7 @@ class Users(db.Model):
         return '<User %r>' % self.name
         
 ```
-2. 在返回时，执行序列号函数
+2. 在返回时，执行序列化函数
 
 ```python
     all_users = Users.query.all()
