@@ -1,0 +1,11 @@
+# App configuration
+debug=True
+SECRET_KEY='***'
+MAIL_SERVER='smtp.gmail.com'
+MAIL_PORT= 587
+MAIL_USE_TLS=True
+MAIL_USERNAME='***'
+MAIL_PASSWORD='***'
+FLASK_MAIL_SUBJECT_PREFIX='FlaskDemo'
+FLASK_MAIL_SENDER='***<***@gmail.com>'
+FLASK_MAIL_ADMIN='FLASK_ADMIN'
