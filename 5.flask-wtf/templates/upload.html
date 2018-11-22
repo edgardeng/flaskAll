@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{super()}}
+    <script >
+    </script>
+{% endblock %}
+
+{% block content %}
+
+{{super()}}
+
+<div class="container ">
+    <div class="panel panel-default" style="padding:2rem;">
+        <h4>表单 二 </h4>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.photo.label }} {{ form.photo }}
+            </div>
+
+            <input type="submit" value="Submit" 提交 class="btn btn-primary">
+            {% if message %}
+            <p class="text-danger ">{{message}}</p>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+

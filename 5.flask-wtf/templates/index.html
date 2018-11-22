@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{super()}}
+    <script >
+    </script>
+{% endblock %}
+
+{% block content %}
+
+{{super()}}
+
+<div class="container">
+
+    {% if message %}
+    <p  class="text-danger ">{{message}}</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
