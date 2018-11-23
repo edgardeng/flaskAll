@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+    {{super()}}
+{% endblock %}
+
+{% block content %}
+
+{{super()}}
+
+<div class="container">
+    <div style="text-align:right;padding: 1rem;">
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Username</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+        </tr>
+        </thead>
+        <tbody id="listBody">
+
+        {% for user in users %}
+
+        <tr id="user{{user.id}}">
+            <th scope="row">{{user.id}}</th>
+            <td>{{user.username}}</td>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+

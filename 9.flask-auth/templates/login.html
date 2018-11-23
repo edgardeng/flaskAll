@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+    {{super()}}
+
+    <script >
+    function getUser() {
+        $('#password').empty();
+        var username = $("#username").val();
+        if (username.length < 1) {
+            $('#message').html('please input username');
+            return;
+        }
+        var password = $("#password").val();
+        if (password.length < 1) {
+            $('#message').html('please input password');
+            return;
+        }
+        let user = {
+            username, password
+        }
+        let data = JSON.stringify(user);
+        return data
+    };
+
+    function login() {
+        let data = getUser();
+        $.ajax({
+                url:"/login",
+                type: "POST",
+                data: data,
+                async: false,
+                dataType: "JSON",
+                contentType: "application/json",
+                success: function(result) {
+                    var success = result.success;
+                    if (success) {
+                         window.location.href="/"
+                    } else {
+                    $('#message').html(result.message);
+                    }
+                }
+        })
+    };
+    function signup() {
+        let data = getUser();
+        $.ajax({
+                url:"/api/user",
+                type: "POST",
+                data: data,
+                async: false,
+                dataType: "JSON",
+                contentType: "application/json",
+                success: function(result) {
+                    var success = result.success;
+                    if (success) {
+                         $('#message').html('signup complete, please login');
+                    }
+                }
+        })
+    };
+
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+
+{{super()}}
+
+
+<div class="container">
+    <div class="panel panel-default" style="width:50%;margin: 2rem auto">
+        <div class="panel-heading">
+            Login or Signup Here !
+        </div>
+        <div class="panel-body">
+            <div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="Password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password"
+                    >
+                </div>
+
+                <button type="submit" class="btn btn-primary "  onclick="login()">Login</button>
+                <button type="submit" class="btn btn-primary "  onclick="signup()">Signup</button>
+            </div>
+            <p class="bg-danger" id="message">{{message}}</p>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}
+
+Flask-All-Demos
+
+{% endblock %}
+
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block head %}
+
+{{super()}}
+
+{#- Docs: http://pythonhosted.org/Flask-Bootstrap/macros.html#fixes  #}
+{{fixes.ie8()}}
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row bg-primary text-white" style="padding:2rem;">
+        <h2>Example to Flask-Auth</h2>
+        <h4>need Login for Check Users</h4>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+
