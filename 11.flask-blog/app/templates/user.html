@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<div class="row justify-content-between">
+    <div class="col-8" id="main">
+        <!-- Main -->
+            <!-- Post -->
+            {% for post in articles %}
+            <div class="card mt-5">
+                <div class="card-body post">
+                        <div class="row post-head border-bottom pt-4 pb-4 ">
+                            <div class="title col-9 border-right">
+                                <h3><a href="single.html" class="text-dark">{{post.title}}</a></h3>
+                            </div>
+                            <div class="meta col-3 text-right">
+                                <div class="post-date text-dark" style="font-size: .8rem">{{ moment(post.created_at).fromNow() }}</div>
+
+                                <div class="post-author mt-2">
+                                        <a href="{{ url_for('.user', user_id=post.author.id) }}" class="text-muted">{{ post.author.name }}</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="#" class="image featured">
+                            <img src="images/pic01.jpg" alt=""/>
+                        </a>
+
+                        <p class="text-secondary">
+                             {% if post.body_html %}
+                    {{ post.body_html | safe }}
+                {% else %}
+                    {{ post.body }}
+                {% endif %}
+                        </p>
+
+                        <footer class="d-flex justify-content-between">
+
+                            <div class="stats">
+                                <a href="#" class=" fa fa-heart text-secondary"><span class="ml-1">28</span></a>
+                                <a href="#" class="ml-2 fa fa-comment text-secondary"><span class="ml-1">128</span></a>
+                            </div>
+                            <ul class="actions">
+                                <a href="{{ url_for('.article', id=post.id) }}"class="button ">Read More</a>
+                            </ul>
+                        </footer>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            <!--<ul class="actions pagination">-->
+            <!--<li><a href="" class="disabled button large previous">Previous Page</a></li>-->
+            <!--<li><a href="#" class="button large next">Next Page</a></li>-->
+            <!--</ul>-->
+    </div>
+
+    <div class="col-3" id="side">
+
+        <!-- Sidebar -->
+        <div class="card mini-post mt-5">
+            <div class="card-body text-center p-0">
+
+                <img class="card-img-top" src="/static/favicon.ico" style="width:48px;height:48px; margin:1rem auto;" alt=""/>
+                <h5><span class="text-info">{{user.name}}</span></h5>
+                <div style="margin-bottom:-1.6rem;font-size:2.2rem;"> <a href="#" class="fa fa-plus-circle"></a></div>
+
+
+                <div class="row border-top m-0">
+                    <div class="col-6 border-right">
+                        <div class="text-secondary m-1">Follower</div>
+                        <h5> 5 </h5>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-secondary m-1">Followed</div>
+                        <h5> 5 </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-3">
+            <a role="button" class="btn btn-outline-primary" href="/article/0/edit">
+                <i class="fa fa-plus"></i> New Article
+            </a>
+        </div>
+
+
+
+
+
+
+            <!-- Intro -->
+            <div class="border-bottom mt-5 mb-4">
+                <h4>Popular Article </h4>
+            </div>
+
+            <!-- Mini Posts -->
+            <section>
+                <div class="mini-posts">
+
+                    <div class="card mini-post mt-2">
+                        <img class="card-img-top" src="/static/images/pic01.jpg"/>
+                        <div class="card-body">
+                            <h5><a href="single.html"><span class="text-black">Vitae sed condimentum</span></a></h5>
+                            <time class="published" datetime="2015-10-20">October 20, 2015</time>
+                            <a href="#" class="author"><img src="images/avatar.jpg" alt=""/></a>
+                        </div>
+                    </div>
+
+
+                </div>
+            </section>
+    </div>
+
+</div>
+
+
+
+{% endblock %}

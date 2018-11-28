@@ -33,9 +33,9 @@ def index():
 def user(user_id):
     if (user_id) :
         user = Users.objects(id=user_id).first()
-        return render_template('edit.html', user=user)
+        return render_template('login.html', user=user)
     else:
-        return render_template('edit.html')
+        return render_template('login.html')
 
 
 @app.route('/api/users', methods=['GET'])

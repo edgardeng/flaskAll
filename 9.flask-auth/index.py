@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 from flask import Flask, abort, request, jsonify, g, url_for, render_template, session
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
@@ -7,20 +6,18 @@ from flask_httpauth import HTTPBasicAuth
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
-
-# initialization
 from werkzeug.utils import redirect
-
+# initialization
 app = Flask(__name__)
-bootstrap = Bootstrap(app)
 
 app.config['SECRET_KEY']='edgardeng'
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://test:123456@localhost:3306/test"
 app.config['SQLALCHEMY_COMMIT_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-db = SQLAlchemy(app) # 获取SQLAlchemy实例对象
 
+bootstrap = Bootstrap(app)
+db = SQLAlchemy(app)  # 获取SQLAlchemy实例对象
 auth = HTTPBasicAuth()
 
 
@@ -129,6 +126,4 @@ def login():
 
 
 if __name__ == '__main__':
-    if not os.path.exists('db.sqlite'):
-        db.create_all()
     app.run(debug=True)

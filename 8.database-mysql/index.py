@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, jsonify, abort
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
-import json
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -51,9 +50,9 @@ def index():
 def user(user_id):
     if (user_id) :
         user = Users.query.filter_by(id=user_id).first()  # 条件查询
-        return render_template('edit.html', user=user)
+        return render_template('login.html', user=user)
     else:
-        return render_template('edit.html')
+        return render_template('login.html')
 
 
 @app.route('/api/users', methods=['GET'])

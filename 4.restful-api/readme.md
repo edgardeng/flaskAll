@@ -1,12 +1,11 @@
 # Flask-Restful-API & Form
 
-## Restful API
-
-###  请求-响应循环
+## Flask的请求-响应循环
 Flask 从客户端收到请求时，要让视图函数能访问一些对象，这样才能处理请求。请求对象，封装了客户端发送的 HTTP 请求。
  
 为了避免大量可有可无的参数把视图函数弄得一团糟，Flask 使用上下文临时把某些对象变为全局可访问。
-```
+
+```python
 from flask import request
 
 @app.route('/')
@@ -41,7 +40,7 @@ Flask 在分发请求之前激活(或推送)程序和请求上下文，请求处
 ```
 在这个例子中，没激活程序上下文之前就调用 current_app.name 会导致错误，但推送完上 下文之后就可以调用了。注意，在程序实例上调用 app.app_context() 可获得一个程序上 下文。
 
-#### 请求调度
+### 请求调度
 程序收到客户端发来的请求时，要找到处理该请求的视图函数。为了完成这个任务，Flask 会在程序的 URL 映射中查找请求的 URL。URL 映射是 URL 和视图函数之间的对应关系。 Flask 使用 app.route 修饰器或者非修饰器形式的 app.add_url_rule() 生成映射。
 
  (venv) $ python
@@ -52,7 +51,7 @@ Flask 在分发请求之前激活(或推送)程序和请求上下文，请求处
 / 和 /user/<name> 路由在程序中使用 app.route 修饰器定义。/static/<filename> 路由是 Flask 添加的特殊路由，用于访问静态文件。第 3 章会详细介绍静态文件。
 URL 映射中的 HEAD、Options、GET 是请求方法，由路由进行处理。Flask 为每个路由都指 定了请求方法，这样不同的请求方法发送到相同的 URL 上时，会使用不同的视图函数进 行处理。HEAD 和 OPTIONS 方法由 Flask 自动处理，因此可以这么说，在这个程序中，URL 映射中的 3 个路由都使用 GET 方法。
 
-#### 请求钩子
+### 请求钩子
 在请求开始时，我们可能需要创建数据库连接或者认证发起请求的用户。
 为了避免在每个视图函数中都使用重复的代码， Flask 提供了注册通用函数的功能，注册的函数可在请求被分发到视图函数之前或之后 调用。
 
@@ -66,7 +65,7 @@ Flask 支持以下 4 种钩子。
 在请求钩子函数和视图函数之间共享数据一般使用上下文全局变量 g。例如，before_ request 处理程序可以从数据库中加载已登录用户，并将其保存到 g.user 中。随后调用视 图函数时，视图函数再使用 g.user 获取用户。
 
 
-#### 响应
+### 响应
 Flask 调用视图函数后，会将其返回值作为响应的内容。
 HTTP 协议需要的不仅是作为请求响应的字符串。HTTP 响应中一个很重要的部分是状态码，Flask 默认设为 200。 如果视图函数返回的响应需要使用不同的状态码，那么可以把数字代码作为第二个返回值，添加到响应文本之后。
 
@@ -91,7 +90,7 @@ from flask import make_response
          return response
 ```
          
-##### 重定向
+#### 重定向
 重定向，这种特殊响应，没有页面文档，只告诉浏览器一个新地址用 以加载新页面。
 重定向响应可以使用 3 个值形式的返回值生成，也可在 Response 对象中设定, Flask还提 供了 redirect() 辅助函数:
 
@@ -150,50 +149,102 @@ def show_users(page):
     pass
 ```
 
-### 请求方式
 
-* GET
+## REST
+六条设计规范定义了一个 REST 系统的特点:
+
+* 客户端-服务器: 客户端和服务器之间隔离，服务器提供服务，客户端进行消费。
+
+* 无状态: 从客户端到服务器的每个请求都必须包含理解请求所必需的信息。换句话说， 服务器不会存储客户端上一次请求的信息用来给下一次使用。
+
+* 可缓存: 服务器必须明示客户端请求能否缓存。
+
+* 分层系统: 客户端和服务器之间的通信应该以一种标准的方式，就是中间层代替服务器做出响应的时候，客户端不需要做任何变动。
+
+* 统一的接口: 服务器和客户端的通信方法必须是统一的。
+
+* 按需编码: 服务器可以提供可执行代码或脚本，为客户端在它们的环境中执行。这个约束是唯一一个是可选的。
+
+### 一个 RESTful 的 web service
+
+REST 架构的最初目的是适应万维网的 HTTP 协议。
+
+RESTful web services 概念的核心就是“资源”。 资源可以用 URI 来表示。
+客户端使用 HTTP 协议定义的方法来发送请求到这些 URIs
+
+HTTP 标准的方法有如下:
+```
+==========  =====================  ==================================
+HTTP 方法   行为                   示例
+==========  =====================  ==================================
+GET         获取资源的信息         http://example.com/api/orders
+GET         获取某个特定资源的信息 http://example.com/api/orders/123
+POST        创建新资源             http://example.com/api/orders
+PUT         更新资源               http://example.com/api/orders/123
+DELETE      删除资源               http://example.com/api/orders/123
+==========  ====================== ==================================
+```
+
+本例中的相关代码
 ```python
-@app.route('/user/<name>', methods=['GET'])
-def user(name):
-    pass
+
+@app.route('/api/users', methods=['GET'])
+def get_users():
+    return jsonify({'users': users})
+
+
+@app.route('/api/user/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = list(filter(lambda t: t['id'] == user_id, users))
+    if len(user) == 0:
+        abort(404)
+    return jsonify({'user': user[0]})
+
+
+@app.route('/api/user', methods=['POST'])
+def add_user():
+    # print(request.json)
+    if not request.json or not 'name' in request.json:
+        abort(400)
+    index = users[-1]['id'] + 1 if len(users) > 0 else 1
+    user = {
+        'id': index,
+        'name': request.json['name'],
+        'email': request.json.get('email', '')
+    }
+    users.append(user)
+    return jsonify({'user': user}), 200
+
+
+@app.route('/api/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    user = list(filter(lambda t: t['id'] == user_id, users))
+    print(user)
+    print(request.json)
+    if len(user) == 0:
+        abort(404)
+    if not request.json:
+        abort(400)
+    if 'name' not in request.json:
+        abort(400)
+    if 'email' not in request.json:
+        abort(400)
+    user[0]['name'] = request.json.get('name', user[0]['name'])
+    user[0]['email'] = request.json.get('email', user[0]['email'])
+    return jsonify({'user': user[0]})
+
+
+@app.route('/api/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = list(filter(lambda t: t['id'] == user_id, users))
+    if len(user) == 0:
+        abort(404)
+    users.remove(user[0])
+    return jsonify({'result': True})
     
-
-@app.route('/users', methods=['GET'])
-def users(name):
-    pageNum = int(request.values.get('pageNum'))
-    pageSize = request.values.get('pageSize')
-    pass
 ```
 
-* POST
-```python
-@app.route('/user', methods=['POST'])
-def addUser():
-    data = eval(request.data)
-```
+## 更多参考
 
-
-## Flask-WTF
-
-Flask-WTF(http://pythonhosted.org/Flask-WTF/)扩展可以把处理 Web 表单的过程变成一 种愉悦的体验。这个扩展对独立的 WTForms(http://wtforms.simplecodes.com)包进行了包 装，
-
-pip install flask-wtf
-
-### 跨站请求伪造保护
-默认情况下，Flask-WTF 能保护所有表单免受跨站请求伪造(Cross-Site Request Forgery，
-CSRF)的攻击。恶意网站把请求发送到被攻击者已登录的其他网站时就会引发 CSRF 攻击。 
-
-为了实现 CSRF 保护，Flask-WTF 需要程序设置一个密钥。Flask-WTF 使用这个密钥生成
-加密令牌，再用令牌验证请求中表单数据的真伪。
-```
-app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
-```
-
-app.config 字典可用来存储框架、扩展和程序本身的配置变量。使用标准的字典句法就能 把配置值添加到 app.config 对象中。这个对象还提供了一些方法，可以从文件或环境中导 入配置值。
-SECRET_KEY 配置变量是通用密钥，可在 Flask 和多个第三方扩展中使用。如其名所示，加 密的强度取决于变量值的机密程度。不同的程序要使用不同的密钥，而且要保证其他人不 知道你所用的字符串。
-
-### 表单类
-
+* [flask-restful](http://www.pythondoc.com/flask-restful/)
 

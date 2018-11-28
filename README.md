@@ -27,8 +27,9 @@ some demo of flask (python web framework) study
 
 * 9.[Flask-Auth](./9.flask-auth)  - web security with auth
 
-* 10.[Flask-Blog](./10.flask-blog) - a big web program of  blog
+* 10.[Flask-Program-Structure](/10.program-structure) - how to build a big program with nice file structure
 
+* 11.[Flask-Blog](/11.flask-blog) - a blog web program build by Flask
 
 
 ## reference
