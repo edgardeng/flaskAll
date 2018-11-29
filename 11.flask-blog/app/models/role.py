@@ -3,7 +3,7 @@ from .permission import Permission
 
 
 class Role(db.Model):
-    __tablename__ = 'roles'
+    __tablename__ = 't_role'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     is_default = db.Column(db.Boolean, default=False, index=True)

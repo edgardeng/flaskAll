@@ -11,7 +11,7 @@
                 <div class="card-body post">
                         <div class="row post-head border-bottom pt-4 pb-4 ">
                             <div class="title col-9 border-right">
-                                <h3><a href="single.html" class="text-dark">{{post.title}}</a></h3>
+                                <h3 class="text-dark">{{post.title}}</h3>
                             </div>
                             <div class="meta col-3 text-right">
                                 <div class="post-date text-dark" style="font-size: .8rem">{{ moment(post.created_at).fromNow() }}</div>
@@ -40,9 +40,11 @@
                                 <a href="#" class=" fa fa-heart text-secondary"><span class="ml-1">28</span></a>
                                 <a href="#" class="ml-2 fa fa-comment text-secondary"><span class="ml-1">128</span></a>
                             </div>
+                            {%  if is_author%}
                             <ul class="actions">
-                                <a href="{{ url_for('.article', id=post.id) }}"class="button ">Read More</a>
+                                <a href="{{ url_for('.article_edit', id=post.id) }}"class="button ">Edit it</a>
                             </ul>
+                            {% endif %}
                         </footer>
                 </div>
             </div>
@@ -80,15 +82,12 @@
         </div>
 
         <div class="text-center mt-3">
+            {%  if is_author%}
             <a role="button" class="btn btn-outline-primary" href="/article/0/edit">
                 <i class="fa fa-plus"></i> New Article
             </a>
+            {%  endif %}
         </div>
-
-
-
-
-
 
             <!-- Intro -->
             <div class="border-bottom mt-5 mb-4">

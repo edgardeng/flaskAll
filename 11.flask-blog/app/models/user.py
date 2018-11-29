@@ -7,17 +7,21 @@ from .role import Role
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+from flask_login import UserMixin, AnonymousUserMixin
+
 # import hashlib
 # import datetime
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
 
     __tablename__ = 't_user'
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(32), unique=True, index=True)
     name = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey('t_role.id'))
     password_hash = db.Column(db.String(128))
     # confirmed = db.Column(db.Boolean, default=False)
     # member_since = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -51,13 +55,13 @@ class User(db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == current_app.config['FLASK_ADMIN']:
+            if self.email == current_app.config['FLASK_MAIL_ADMIN']:
                 self.role = Role.query.filter_by(name='Administrator').first()
             if self.role is None:
-                self.role = Role.query.filter_by(default=True).first()
-        if self.email is not None and self.avatar_hash is None:
-            self.avatar_hash = self.gravatar_hash()
-        self.follow(self)
+                self.role = Role.query.filter_by(is_default=True).first()
+        # if self.email is not None and self.avatar_hash is None:
+        #     self.avatar_hash = self.gravatar_hash()
+        # self.follow(self)
 
     @property
     def password(self):
@@ -68,7 +72,10 @@ class User(db.Model):
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        try:
+            return check_password_hash(self.password_hash, password)
+        except Exception as e:
+            return False
 
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
@@ -138,6 +145,10 @@ class User(db.Model):
             f = Follow(follower=self, followed=user)
             db.session.add(f)
 
+    def ping(self):
+        # self.last_seen = datetime.utcnow()  # last time login
+        db.session.add(self)
+
     def unfollow(self, user):
         f = self.followed.filter_by(followed_id=user.id).first()
         if f:
@@ -159,3 +170,12 @@ class User(db.Model):
     def followed_Articles(self):
         return Article.query.join(Follow, Follow.followed_id == Article.author_id) \
             .filter(Follow.follower_id == self.id)
+
+
+# no use
+class AnonymousUser(AnonymousUserMixin):
+    def can(self, permissions):
+        return False
+
+    def is_administrator(self):
+        return False

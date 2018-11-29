@@ -1,0 +1,100 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Flask-Blog{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<style>
+    html { height: 100%;}
+    body { padding-top: 60px; background-color: #f1f1f1; height:95%;}
+</style>
+
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-expand-lg navbar-light border-bottom fixed-top" role="navigation" style="background-color: #fefefe;">
+    <div class="container">
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbar"
+            aria-controls="navbar" aria-expanded="false"
+            aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+        <div class="collapse navbar-collapse order-3 order-md-2" id="navbar">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item ">
+              <a class="nav-link" href="/" >Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
+          </ul>
+        </div>
+
+        <a class="navbar-brand mx-auto order-1 order-md-3" href="#">Flask-Blog</a>
+
+        <div class="collapse navbar-collapse order-4 order-md-4" id="navbar">
+          <ul class="navbar-nav ml-auto">
+
+              {% if current_user.is_authenticated %}
+              <li class="nav-item">
+                  <a class="nav-link" href="/user/{{current_user.id}}">{{current_user.username}} </a>
+              </li>
+              <li class="nav-item">
+                  <a class="fa fa-sign-out nav-link" style="line-height: 1.5rem;" href="/auth/logout"></a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                  <a class="nav-link" href="/auth/login">Sign In </a>
+              </li>
+              {% endif %}
+
+          </ul>
+          <!--<form class="form-inline" role="search">-->
+            <!--<input class="search js-search form-control form-control-rounded mr-sm-2" type="text" title="Enter search query here.." placeholder="Search.." aria-label="Search">-->
+          <!--</form>-->
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="min-height:80%;">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}
+    {% endblock %}
+</div>
+
+<div class="container">
+
+    <!-- Footer -->
+    <div id="footer" class="mt-5 p-4 border-top text-secondary">
+        <div class="d-flex justify-content-center mt-2">
+            <div><a href="#" class="fa fa-twitter text-secondary"> <span class="label">Twitter</span></a></div>
+            <div class="ml-4"><a href="#" class="fa fa-facebook text-secondary"><span class="label">Facebook</span></a></div>
+            <div class="ml-4"><a href="#" class="fa fa-instagram text-secondary"><span class="label">Instagram</span></a></div>
+            <div class="ml-4"><a href="#" class="fa fa-rss text-secondary"><span class="label">RSS</span></a></div>
+            <div class="ml-4"><a href="#" class="fa fa-envelope text-secondary"><span class="label">Email</span></a></div>
+        </div>
+        <p class="text-center mt-2">&copy; All Right By: <a href="#" class="text-info">Flask Blog  </a>2018.</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+{% endblock %}

@@ -33,7 +33,7 @@ CREATE TABLE t_user
   CONSTRAINT user_role_id FOREIGN KEY (role_id) REFERENCES t_role (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-INSERT INTO t_user VALUES (1,'test',1,'$6$rounds=656000$k1mATcIxrC9GiQtg$9H82DiOC..z8AxDiqU0hUI9idppt/rPEtxgdScPmAyvjV2HJwGIzEq/HLdp6tYx6sg.PMKie/ldx4U9yN.ZPj0', 'TestUser',NULL,NULL, sysdate());
+INSERT INTO t_user VALUES (1,'test',1,'pbkdf2:sha256:50000$5In9uW8H$2f1aebe35025d88aa8f325c19d836f013627d3e716bd320c6dff4fd26472c3aa', 'TestUser',NULL,NULL, sysdate());
 
 
 DROP TABLE IF EXISTS t_article;

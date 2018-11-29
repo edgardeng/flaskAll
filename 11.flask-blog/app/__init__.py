@@ -14,6 +14,7 @@ db = SQLAlchemy()
 config = Config()
 pagedown = PageDown()
 login_manager = LoginManager()
+login_manager.session_protection = 'strong'  # None、basic strong
 login_manager.login_view = 'auth.login'
 
 

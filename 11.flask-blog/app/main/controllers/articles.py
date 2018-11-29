@@ -13,17 +13,15 @@ from ... import db
 @main.route('/')
 def index():
     page = request.args.get('page', 1, type=int)
-    show_followed = False
-    if current_user.is_authenticated:
-        print('is_authenticated')
-        show_followed = bool(request.cookies.get('show_followed', ''))
+    # show_followed = False
+    # if current_user.is_authenticated:
+    #     print('is_authenticated')
+    #     show_followed = bool(request.cookies.get('show_followed', ''))
     query = Article.query
     size = current_app.config['FLASK_POSTS_PER_PAGE'];
 
-    pagination = query.order_by(Article.created_at.desc()).paginate(
-        page, per_page=size, error_out=True)
+    pagination = query.order_by(Article.created_at.desc()).paginate(page, per_page=size, error_out=True)
     posts = pagination.items
-    print(posts)
     return render_template('index.html', articles=posts, pagination=pagination)
 
 
@@ -44,20 +42,21 @@ def article(id):
     size = current_app.config['FLASK_COMMENTS_PER_PAGE']
     pagination = one_article.comments.paginate(
         page, per_page=size, error_out=False)
+    is_author = current_user == one_article.author
     comments = pagination.items
-    return render_template('post.html', post=one_article, comments=comments)
+    return render_template('post.html', post=one_article, comments=comments, is_author=is_author)
 
 
 # article edit
 @main.route('/article/<int:id>/edit', methods=['GET', 'POST'])
-# @login_required
-def edit(id):
+@login_required
+def article_edit(id):
     if id != 0:
         post = Article.query.get_or_404(id)
+        if current_user != post.author and not current_user.can(Permission.ADMIN):
+            abort(403)
     else:
         post = Article()
-    # if current_user != post.author and not current_user.can(Permission.ADMIN):
-    #     abort(403)
     form = PostForm()
     if form.validate_on_submit():
         post.body = form.body.data
