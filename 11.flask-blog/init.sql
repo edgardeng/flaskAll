@@ -63,3 +63,16 @@ CREATE TABLE t_comment (
   CONSTRAINT comment_author_id FOREIGN KEY (author_id) REFERENCES t_user (id),
   CONSTRAINT comment_article_id FOREIGN KEY (article_id) REFERENCES t_article (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS t_follow;
+CREATE TABLE t_follow
+(
+  id            BIGINT(16)  NOT NULL AUTO_INCREMENT,
+  follower_id   BIGINT(16)  NOT NULL,
+  following_id  BIGINT(16)  NOT NULL,
+  created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  CONSTRAINT follow_follower_id FOREIGN KEY (follower_id) REFERENCES t_user (id),
+  CONSTRAINT follow_following_id FOREIGN KEY (following_id) REFERENCES t_user (id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+

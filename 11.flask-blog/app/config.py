@@ -10,7 +10,7 @@ class Config:
     FLASK_MAIL_SENDER = 'Flasky Admin <flasky@example.com>'
     FLASK_MAIL_ADMIN = 'FLASKY_ADMIN'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    FLASK_POSTS_PER_PAGE = 20
+    FLASK_POSTS_PER_PAGE = 5
     FLASK_FOLLOWERS_PER_PAGE = 5
     FLASK_COMMENTS_PER_PAGE = 5
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://test:123456@localhost:3306/test'

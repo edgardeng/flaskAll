@@ -26,8 +26,8 @@
             {% endfor %}
         </ul>
 
-{% if pagination %}
-<div class="text-center mt-4">
+{% if pagination and pagination.pages > 0 %}
+<div class="mt-4">
     {{ macros.pagination_widget(pagination, '.article', fragment='#comments', id=post.id) }}
 </div>
 {% endif %}

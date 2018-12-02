@@ -4,9 +4,6 @@
 
 <div class="row ">
     <div class="col-12" id="main">
-        <!-- Main -->
-            <!-- Post -->
-
             <div class="card mt-5">
                 <div class="card-body post">
                         <div class="row post-head border-bottom pt-4 pb-4">
@@ -17,7 +14,7 @@
                                 <div class="post-date text-dark" style="font-size: .8rem">{{ moment(post.created_at).fromNow() }}</div>
 
                                 <div class="post-author mt-2">
-                                        <a href="{{ url_for('.user', user_id=post.author.id) }}" class="text-muted">{{ post.author.name }}</a>
+                                        <a href="{{ url_for('.user', user_id=post.author.id) }}" class="text-muted">{{ post.author.username }}</a>
                                 </div>
                             </div>
                         </div>
@@ -37,7 +34,7 @@
                         <footer class="d-flex justify-content-between">
 
                             <div class="stats">
-                                <a href="#" class=" fa fa-heart text-secondary"><span class="ml-1">28</span></a>
+                                <!--<a href="#" class=" fa fa-heart text-secondary"><span class="ml-1">28</span></a>-->
                                 <a href="#" class="ml-2 fa fa-comment text-secondary"><span class="ml-1">128</span></a>
                             </div>
                         </footer>
@@ -49,15 +46,6 @@
             <h5 class="card-header">Leave a Comment:</h5>
             <div class="card-body">
                 {{ wtf.quick_form(form) }}
-
-                <!--<form class="text-right">-->
-                    <!--<div class="form-group">-->
-                        <!--{{ form.body() }}-->
-                        <!--<textarea rows="3" class="form-control"></textarea>-->
-                    <!--</div>-->
-                    <!--{{ form.submit() }}-->
-                    <!--<button type="submit" id="comment" class="btn btn-primary">Submit</button>-->
-                <!--</form>-->
             </div>
         </div>
     </div>

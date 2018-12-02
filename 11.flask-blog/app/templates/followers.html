@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
+{% block title %}Flasky - Follow {% endblock %}
+
 {% block page_content %}
 
 <div class="row justify-content-between">
     <div class="col-8" id="main">
-        {% include '_posts.html' %}
+        {% include '_followers.html' %}
     </div>
 
     <div class="col-3" id="side">
@@ -12,7 +14,6 @@
         <!-- Sidebar -->
         <div class="card mini-post mt-5">
             <div class="card-body text-center p-0">
-
                 <img class="card-img-top" src="/static/favicon.ico" style="width:48px;height:48px; margin:1rem auto;" alt=""/>
                 <h5><span class="text-info">{{user.username}}</span></h5>
                 <div style="margin-bottom:-1.6rem;font-size:2.2rem;min-height:3.2rem;">
@@ -20,12 +21,12 @@
                     <a href="{{url_for('.follow', user_id=user.id)}}" class="fa fa-plus-circle"></a>
                     {% endif %}
                 </div>
-
                 <div class="row border-top m-0">
                     <div class="col-6 border-right">
                         <a href="{{url_for('.follower',user_id=user.id)}}" >
                         <div class="text-secondary m-1">Follower</div>
-                            <h5> {{follower_count}} </h5> </a>
+                            <h5> {{follower_count}} </h5>
+                        </a>
                     </div>
                     <div class="col-6">
                         <a href="{{url_for('.following', user_id=user.id)}}" >
@@ -38,7 +39,7 @@
         </div>
 
         <div class="text-center mt-3">
-            {% if current_user.id == user.id %}
+            {%  if is_author %}
             <a role="button" class="btn btn-outline-primary" href="/article/0/edit">
                 <i class="fa fa-plus"></i> New Article
             </a>
@@ -49,7 +50,6 @@
             <div class="border-bottom mt-5 mb-4">
                 <h4>Popular Article </h4>
             </div>
-
             <!-- Mini Posts -->
             <section>
                 <div class="mini-posts">

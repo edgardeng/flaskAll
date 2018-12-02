@@ -28,16 +28,16 @@ class User(UserMixin, db.Model):
     # last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     # avatar_hash = db.Column(db.String(32))
     articles = db.relationship('Article', backref='author', lazy='dynamic')
-    # followed = db.relationship('Follow',
-    #                            foreign_keys=[Follow.follower_id],
-    #                            backref=db.backref('follower', lazy='joined'),
-    #                            lazy='dynamic',
-    #                            cascade='all, delete-orphan')
-    # followers = db.relationship('Follow',
-    #                             foreign_keys=[Follow.followed_id],
-    #                             backref=db.backref('followed', lazy='joined'),
-    #                             lazy='dynamic',
-    #                             cascade='all, delete-orphan')
+    follower = db.relationship('Follow',
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    following = db.relationship('Follow',
+                                foreign_keys=[Follow.following_id],
+                                backref=db.backref('following', lazy='joined'),
+                                lazy='dynamic',
+                                cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
 

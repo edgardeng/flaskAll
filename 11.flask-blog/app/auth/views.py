@@ -67,6 +67,8 @@ def register():
             session.commit()
             flash('Register Success . Please Login')
             return redirect(url_for('auth.login'))
+    if len(form.errors) > 0:
+        flash(form.errors)
         # token = user.generate_confirmation_token()
         # send_email(user.email, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
         # flash('A confirmation email has been sent to you by email.')

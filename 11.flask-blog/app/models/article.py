@@ -17,6 +17,7 @@ class Article(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('t_user.id'))
     comments = db.relationship('Comment', backref='article', lazy='dynamic')
     # author = db.relationship('User', backref='author', uselist=False)
+    # comment_count = comments.count()
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):

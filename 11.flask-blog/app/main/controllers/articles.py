@@ -16,7 +16,10 @@ def index():
     query = Article.query
     size = current_app.config['FLASK_POSTS_PER_PAGE'];
     pagination = query.order_by(Article.created_at.desc()).paginate(page, per_page=size, error_out=True)
-    posts = pagination.items
+    # posts = pagination.items
+    posts = [{'author': item.author, 'created_at': item.created_at, 'body': item.body,
+              'id': item.id, 'title': item.title, 'comment_count': item.comments.count()}
+               for item in pagination.items]
     return render_template('index.html', articles=posts, pagination=pagination)
 
 
