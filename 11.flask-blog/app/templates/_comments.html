@@ -1,0 +1,35 @@
+
+{% import "_macros.html" as macros %}
+<div class="card mt-5">
+    <div class="card-body">
+        <h5 class="card-title">Comments:</h5>
+        <ul class="list-group list-group-flush mt-2">
+            {% for comment in comments %}
+
+            <li class="list-group-item">
+                <div class="comment-content">
+                    <span> <a href="{{ url_for('.user', user_id=comment.author.id) }}">{{ comment.author.username }}</a> </span>
+                    <span class="text-muted " style="font-size:.8rem;">({{ moment(comment.created_at).fromNow() }}): </span>
+                    <span>
+                    {% if comment.body_html %}
+                        {{ comment.body_html | safe }}
+                    {% else %}
+                        {{ comment.body }}
+                    {% endif %}
+                </span>
+                    {% if current_user.id == comment.author.id %}
+
+                     <a class="btn-link text-danger float-right" href="{{url_for('.comment_delete', id=comment.id)}}"> delete</a>
+                    {% endif %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+{% if pagination %}
+<div class="text-center mt-4">
+    {{ macros.pagination_widget(pagination, '.article', fragment='#comments', id=post.id) }}
+</div>
+{% endif %}
+    </div>
+</div>

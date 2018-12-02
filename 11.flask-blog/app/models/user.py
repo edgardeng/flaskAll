@@ -1,6 +1,6 @@
 from .. import db
 from .article import Article
-from .follew import Follow
+from .follow import Follow
 from .permission import Permission
 from .role import Role
 
@@ -38,7 +38,7 @@ class User(UserMixin, db.Model):
     #                             backref=db.backref('followed', lazy='joined'),
     #                             lazy='dynamic',
     #                             cascade='all, delete-orphan')
-    # comments = db.relationship('Comment', backref='author', lazy='dynamic')
+    comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
 
     def as_dict(self):
