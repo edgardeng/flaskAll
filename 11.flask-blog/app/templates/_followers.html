@@ -1,0 +1,36 @@
+
+
+<ul class="nav nav-tabs mt-5">
+    <li class="nav-item">
+        <a class="nav-link {% if endpoint =='.follower' %} active {% endif %}"
+           href="{{url_for('.follower', user_id=user.id)}}">Follower</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if endpoint =='.following' %} active {% endif %} "
+           href="{{url_for('.following', user_id=user.id)}}">Following</a>
+    </li>
+</ul>
+
+<div class="border border-top-0 p-4" style="background:white">
+
+    <table class="table table-hover followers">
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Since</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        {% for follow in follows %}
+        <tr>
+            <td>
+                <a href="{{ url_for('.user', user_id = follow.user.id) }}">
+                    {{ follow.user.username }}
+                </a>
+            </td>
+            <td>{{ moment(follow.created_at).format('L') }}</td>
+            <td> ?</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
