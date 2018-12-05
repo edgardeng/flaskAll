@@ -8,6 +8,7 @@ from .article import Article
 from .role import Role
 from .follow import Follow
 
+
 # 加载用户的回调函数
 @login_manager.user_loader
 def load_user(user_id):

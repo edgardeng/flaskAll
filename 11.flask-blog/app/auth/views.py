@@ -9,14 +9,10 @@ from .forms import LoginForm, RegistrationForm
 
 @auth.before_app_request
 def before_request():
+    # response before every request
     if current_user.is_authenticated:
         current_user.ping()
-        # is user's email confirmed
-        # if not current_user.confirmed \
-        #         and request.endpoint \
-        #         and request.blueprint != 'auth' \
-        #         and request.endpoint != 'static':
-        #     return redirect(url_for('auth.unconfirmed'))
+    # print('-- bef#ore_request')
 
 
 @auth.route('/unconfirmed')

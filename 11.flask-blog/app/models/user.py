@@ -1,4 +1,5 @@
-from .. import db
+from datetime import datetime
+from .. import db, login_manager
 from .article import Article
 from .follow import Follow
 from .permission import Permission
@@ -7,11 +8,7 @@ from .role import Role
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-
 from flask_login import UserMixin, AnonymousUserMixin
-
-# import hashlib
-# import datetime
 
 
 class User(UserMixin, db.Model):
@@ -21,12 +18,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(32), unique=True, index=True)
     name = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)
+    created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     role_id = db.Column(db.Integer, db.ForeignKey('t_role.id'))
     password_hash = db.Column(db.String(128))
-    # confirmed = db.Column(db.Boolean, default=False)
-    # member_since = db.Column(db.DateTime(), default=datetime.utcnow)
-    # last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
-    # avatar_hash = db.Column(db.String(32))
     articles = db.relationship('Article', backref='author', lazy='dynamic')
     follower = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
@@ -46,6 +40,12 @@ class User(UserMixin, db.Model):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+    def follower_count(self):
+        return self.follower.count()
+
+    def following_count(self):
+        return self.following.count()
 
     @staticmethod
     def add_self_follows():
@@ -137,20 +137,25 @@ class User(UserMixin, db.Model):
         db.session.add(self)
         return True
 
-    def can(self, perm):
-        return self.role is not None and self.role.has_permission(perm)
+    def ping(self):
+        # self.last_seen = datetime.utcnow()
+        db.session.add(self)
 
     def is_administrator(self):
-        return self.can(Permission.ADMIN)
+        return self.role is not None and self.role.permissions == Permission.ADMIN
+
+    def change_role(self):
+        permission = Permission.ADMIN
+        if self.is_administrator():
+            permission = Permission.USER
+        role = db.session.query(Role).filter_by(permissions=permission).first()
+        db.session.query(User).filter_by(id=self.id).update({'role_id': role.id})
+        db.session.commit()
 
     def follow(self, user):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
             db.session.add(f)
-
-    def ping(self):
-        # self.last_seen = datetime.utcnow()  # last time login
-        db.session.add(self)
 
     def unfollow(self, user):
         f = self.followed.filter_by(followed_id=user.id).first()
@@ -177,8 +182,6 @@ class User(UserMixin, db.Model):
 
 # no use
 class AnonymousUser(AnonymousUserMixin):
-    def can(self, permissions):
-        return False
-
     def is_administrator(self):
         return False
+login_manager.anonymous_user = AnonymousUser

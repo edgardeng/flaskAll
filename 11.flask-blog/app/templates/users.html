@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block page_content %}
+
+<div class="content justify-content-between">
+
+    <div class="card mt-5 p-4">
+    <table class="table table-hover ">
+        <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>CreatedAt</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        {% for user in users %}
+        <tr>
+            <td> {{user.username}} </td>
+            <td> {{user.email}} </td>
+            <td> {{user.created_at}} </td>
+            <td> <span class="text-white p-1 {% if user.role.permissions==1 %} bg-info {% else %} bg-warning {% endif %}" >
+                {{user.role.name}} </span>
+            </td>
+            <td>
+                {% if user.role.permissions==1 %}
+                <a href="{{url_for('main.set_role',user_id=user.id)}}" class="btn btn-link" > Set as Admin</a>
+                {% else %}
+                <a href="{{url_for('main.set_role',user_id=user.id)}}" class="btn btn-link" > Set as User</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+
+</div>
+
+{% endblock %}

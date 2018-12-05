@@ -3,6 +3,8 @@ from flask_login import login_required, current_user
 from werkzeug.exceptions import abort
 from werkzeug.utils import redirect
 
+from ..decorators import admin_required
+
 from .. import main
 from ...models import Article, Permission, Comment
 from ..forms import PostForm, CommentForm
@@ -15,11 +17,12 @@ def index():
     page = request.args.get('page', 1, type=int)
     query = Article.query
     size = current_app.config['FLASK_POSTS_PER_PAGE'];
-    pagination = query.order_by(Article.created_at.desc()).paginate(page, per_page=size, error_out=True)
-    # posts = pagination.items
-    posts = [{'author': item.author, 'created_at': item.created_at, 'body': item.body,
-              'id': item.id, 'title': item.title, 'comment_count': item.comments.count()}
-               for item in pagination.items]
+    pagination = query.filter_by(is_forbidden=0).order_by(Article.created_at.desc()).paginate(page, per_page=size, error_out=True)
+    # print(current_user.is_administrator())
+    posts = pagination.items
+    # [{'author': item.author, 'created_at': item.created_at, 'body': item.body,
+    #           'id': item.id, 'title': item.title, 'comment_count': item.comments.count()}
+    #            for item in pagination.items]
     return render_template('index.html', articles=posts, pagination=pagination)
 
 
@@ -32,6 +35,9 @@ def about():
 @main.route('/article/<id>', methods=['GET', 'POST'])
 def article(id):
     one_article = Article.query.get_or_404(id)
+    if one_article.is_forbidden:
+        abort(404)
+        return
     form = CommentForm()
     if form.validate_on_submit():
         if not current_user.is_authenticated:
@@ -51,6 +57,16 @@ def article(id):
     is_author = current_user == one_article.author
     comments = pagination.items
     return render_template('post.html', post=one_article, comments=comments, pagination=pagination, form=form)
+
+
+@main.route('/article/<int:id>/forbidden', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def article_forbidden(id):
+    Article.query.get_or_404(id)
+    db.session.query(Article).filter_by(id=id).update({'is_forbidden': 1})
+    db.session.commit()
+    return redirect(url_for('.index'))
 
 
 # article edit

@@ -16,22 +16,22 @@
             <div class="card-body text-center p-0">
                 <img class="card-img-top" src="/static/favicon.ico" style="width:48px;height:48px; margin:1rem auto;" alt=""/>
                 <h5><span class="text-info">{{user.username}}</span></h5>
-                <div style="margin-bottom:-1.6rem;font-size:2.2rem;min-height:3.2rem;">
+                <div style="margin-bottom:-1.6rem;font-size:2rem;min-height:3rem;color:orangered">
                     {% if current_user.id != user.id %}
-                    <a href="{{url_for('.follow', user_id=user.id)}}" class="fa fa-plus-circle"></a>
+                    <a href="{{url_for('.follow', user_id=user.id)}}" class="fa fa-heart"></a>
                     {% endif %}
                 </div>
                 <div class="row border-top m-0">
                     <div class="col-6 border-right">
                         <a href="{{url_for('.follower',user_id=user.id)}}" >
                         <div class="text-secondary m-1">Follower</div>
-                            <h5> {{follower_count}} </h5>
+                            <h5> {{user.follower_count()}} </h5>
                         </a>
                     </div>
                     <div class="col-6">
                         <a href="{{url_for('.following', user_id=user.id)}}" >
                         <div class="text-secondary m-1">Following</div>
-                        <h5> {{following_count}} </h5>
+                        <h5> {{user.following_count()}} </h5>
                         </a>
                     </div>
                 </div>

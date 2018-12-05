@@ -13,7 +13,8 @@ CREATE TABLE t_role
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-INSERT INTO t_role VALUES (1,'普通用户','发布文章，管理文章',1, TRUE, sysdate());
+INSERT INTO t_role VALUES (1,'User','Follow, Comment, Post',1, TRUE, sysdate());
+INSERT INTO t_role VALUES (2,'Administrator','Follow, Comment, Post, User, Forbidden',2, FALSE, sysdate());
 
 
 DROP TABLE IF EXISTS t_user;
@@ -43,6 +44,7 @@ CREATE TABLE t_article (
   body       TEXT         DEFAULT NULL,
   body_html  TEXT         DEFAULT NULL,
   author_id  BIGINT(16)   DEFAULT NULL,
+  is_forbidden Boolean    DEFAULT FALSE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   CONSTRAINT article_author_id FOREIGN KEY (author_id) REFERENCES t_user (id)
@@ -63,6 +65,7 @@ CREATE TABLE t_comment (
   CONSTRAINT comment_author_id FOREIGN KEY (author_id) REFERENCES t_user (id),
   CONSTRAINT comment_article_id FOREIGN KEY (article_id) REFERENCES t_article (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 
 DROP TABLE IF EXISTS t_follow;
 CREATE TABLE t_follow

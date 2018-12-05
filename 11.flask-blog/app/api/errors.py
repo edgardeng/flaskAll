@@ -3,8 +3,8 @@ from . import api
 
 
 @api.app_errorhandler(403)
-def forbidden(message):
-    response = jsonify({'error': 'forbidden', 'message': message})
+def forbidden(e):
+    response = jsonify({'error': 'forbidden'})
     response.status_code = 403
     return response
 

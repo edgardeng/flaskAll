@@ -1,7 +1,4 @@
 from .. import db
-# from .user import User
-# from .comment import Comment
-
 from datetime import datetime
 from markdown import markdown
 import bleach
@@ -13,11 +10,13 @@ class Article(db.Model):
     title = db.Column(db.String(128))
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
+    is_forbidden = db.Column(db.Boolean, default=False, index=True)
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('t_user.id'))
     comments = db.relationship('Comment', backref='article', lazy='dynamic')
-    # author = db.relationship('User', backref='author', uselist=False)
-    # comment_count = comments.count()
+
+    def comment_count(self):
+        return self.comments.count()
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -28,9 +27,9 @@ class Article(db.Model):
         html_body = bleach.clean(html_body, tags=allowed_tags, strip=True)
         html_body = bleach.linkify(html_body)
         target.html_body = html_body
-        # target.body_html = bleach.linkify(bleach.clean(
-        #     markdown(value, output_format='html'),
-        #     tags=allowed_tags, strip=True))
+        target.body_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
 
 
 db.event.listen(Article.body, 'set', Article.on_changed_body)

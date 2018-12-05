@@ -33,6 +33,11 @@
             <li class="nav-item">
               <a class="nav-link" href="/about">About</a>
             </li>
+             {% if current_user.is_administrator() %}
+              <li class="nav-item">
+              <a class="nav-link" href="/users">Users</a>
+            </li>
+              {% endif %}
           </ul>
         </div>
 
