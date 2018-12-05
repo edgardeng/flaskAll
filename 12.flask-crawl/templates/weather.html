@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{super()}}
+<link href="http://i.tq121.com.cn/c/weather2017/headStyle_1.css" rel="stylesheet">
+<link href="http://i.tq121.com.cn/c/weather2015/bluesky/c_7d.css?v=20170407" rel="stylesheet">
+<script>
+</script>
+{% endblock %}
+
+{% block content %}
+
+{{super()}}
+
+<div class="container mt-5">
+    <div class="card">
+        <h5 class="card-header">Weather</h5>
+        <div class="card-body">
+            <h5 class="card-title">Data From {{api_url}}</h5>
+            <p class="card-text">
+                城市：{{api_result.city}}
+                气温：{{api_result.temp}}
+                湿度：{{api_result.SD}}
+                风力：{{api_result.WD}} {{api_result.WS}}
+                更新时间： {{api_result.time}}
+            </p>
+        </div>
+    </div>
+    <div class="card mt-5">
+        <h5 class="card-header">Weather</h5>
+        <div class="card-body">
+            <h5 class="card-title">Data From {{page_url}}</h5>
+
+            {{ page_result | safe }}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
