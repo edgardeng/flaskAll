@@ -35,11 +35,14 @@ class User(UserMixin, db.Model):
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
     @staticmethod
-    def as_dict_list(l):
-        return [m.as_dict() for m in l]
+    def to_json_list(l):
+        return [m.to_json() for m in l]
 
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    def to_json(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email}
 
     def follower_count(self):
         return self.follower.count()
@@ -80,6 +83,22 @@ class User(UserMixin, db.Model):
         except Exception as e:
             return False
 
+    # generate token for user auth api
+    def generate_auth_token(self, expiration):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.id}).decode('utf-8')
+
+    # verify token for user auth api
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
+
+    # generate token for confirm email
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'confirm': self.id}).decode('utf-8')
@@ -93,47 +112,6 @@ class User(UserMixin, db.Model):
         if data.get('confirm') != self.id:
             return False
         self.confirmed = True
-        db.session.add(self)
-        return True
-
-    def generate_reset_token(self, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'reset': self.id}).decode('utf-8')
-
-    @staticmethod
-    def reset_password(token, new_password):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token.encode('utf-8'))
-        except:
-            return False
-        user = User.query.get(data.get('reset'))
-        if user is None:
-            return False
-        user.password = new_password
-        db.session.add(user)
-        return True
-
-    def generate_email_change_token(self, new_email, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps(
-            {'change_email': self.id, 'new_email': new_email}).decode('utf-8')
-
-    def change_email(self, token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token.encode('utf-8'))
-        except:
-            return False
-        if data.get('change_email') != self.id:
-            return False
-        new_email = data.get('new_email')
-        if new_email is None:
-            return False
-        if self.query.filter_by(email=new_email).first() is not None:
-            return False
-        self.email = new_email
-        self.avatar_hash = self.gravatar_hash()
         db.session.add(self)
         return True
 

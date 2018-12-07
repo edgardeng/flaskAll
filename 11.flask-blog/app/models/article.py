@@ -2,6 +2,7 @@ from .. import db
 from datetime import datetime
 from markdown import markdown
 import bleach
+from ..exceptions import ValidationError
 
 
 class Article(db.Model):
@@ -14,6 +15,19 @@ class Article(db.Model):
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('t_user.id'))
     comments = db.relationship('Comment', backref='article', lazy='dynamic')
+
+    @staticmethod
+    def from_json(json_post):
+        if not json_post:
+            raise ValidationError('post does not have a body')
+        title = json_post.get('title')
+        body = json_post.get('body')
+        if body is None or body == '' or title is None:
+            raise ValidationError('post does not have a body')
+        return Article(title=title, body=body)
+
+    def to_json(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
     def comment_count(self):
         return self.comments.count()

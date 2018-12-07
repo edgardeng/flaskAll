@@ -36,6 +36,17 @@
 * 删除评论 / delete a comment
 * 查看文章的评论 / check an article's comments
 
+### Restful Api
+
+> 本例使用flask_httpauth中的HTTPTokenAuth / HTTPTokenAuth in flask-httpauth used in this example.
+
+>Put `{ "Authorization": "Bearer ********** }` in http request heads 
+
+#### 认证 / 
+
+* API登录认证 / api login 
+
+* 登录Token / get login token
 
 ## extension
 
@@ -43,10 +54,10 @@
 
 * [flask-script](https://flask-script.readthedocs.io/en/latest/) support for writing external scripts
 
-* [SQLAlchemy]() Adds SQLAlchemy support
+* [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/)
 
-* [Flask-Login]()
+* [Flask-Login](https://flask-login.readthedocs.io/en/latest/) implement user authentication
 
-* [Flask-]()
+* [Flask-HttpAuth](https://flask-httpauth.readthedocs.io/en/latest/) implement user authentication in you api
 
 

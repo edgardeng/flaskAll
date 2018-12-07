@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from .. import login_manager
-from .user import User
+from .user import User, AnonymousUser
 from .permission import Permission
 from .comment import Comment
 from .article import Article
