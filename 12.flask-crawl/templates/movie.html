@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{{super()}}
+
+<div class="container mt-5">
+    <table class=" table">
+        <thead>
+        <tr>
+            <th scope="col">片名</th>
+            <th scope="col">#</th>
+            <th scope="col">#</th>
+        </tr>
+        </thead>
+        <tbody id="listBody">
+
+        {% for movie in movies %}
+        <tr >
+            <td>{{movie.name}}</td>
+            <td>{{movie.type}}</td>
+            <td>{{movie.price}}</td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+
+</div>
+
+{% endblock %}

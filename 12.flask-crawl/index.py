@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_bootstrap import Bootstrap
 import json
 import urllib3
+import scrapy
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 app.config['SECRET_KEY']='edgardeng'
@@ -42,6 +44,56 @@ def weather():
             tmp3 = tmp2[:tag_script]
             page_result = '<div ' + tmp3
     return render_template('weather.html', api_url=api_url, api_result=api_result, page_url=page_url, page_result=page_result)
+
+
+@app.route('/movie')
+def movie():
+    http = urllib3.PoolManager()
+    page_url = 'http://www.mtime.com'
+    page = http.request('GET', page_url).data.decode()
+    response = scrapy.Selector(text=page)
+    sub_movie = response.xpath('//div[@class="ciname-movie"]')
+    sub_select = sub_movie[0].xpath('.//dd')
+    movies = []
+    for sub in sub_select:
+        typea = sub.xpath('.//div[@class="smalltypebox"]')
+        type = typea.xpath('./p/text()').extract()
+        name = sub.xpath('./h3/a/text()').extract()
+        item = {
+            'name': name,
+            'type': type
+        }
+        movies.append(item)
+    return render_template('movie.html', movies=movies)
+
+
+@app.route('/boxoffice')
+def boxoffice():
+    http = urllib3.PoolManager()
+    page_url = 'http://movie.mtime.com/boxoffice/'
+    page = http.request('GET', page_url).data.decode()
+    soup = BeautifulSoup(page, 'html.parser')
+    # print soup.prettify()
+    list = soup.find_all('div', attrs={'class': 'movietopmod'})
+    print(list)
+    movies = []
+    for item in list:
+        print(item)
+        txtbox = item.find('div', attrs={'class': 'txtbox'})
+        print(txtbox)
+        name = txtbox.find('h3').a.get_text()
+        totalnum = item.find('p', attrs={'class': 'totalnum'})
+        type = totalnum.get_text()
+        gradebox = item.find('div', attrs={'class': 'gradebox'})
+        if gradebox.p:
+            grade = gradebox.p.get_text()
+        movie = {
+            'name': name,
+            'type': type,
+            'price': grade
+        }
+        movies.append(movie)
+    return render_template('movie.html', movies=movies)
 
 
 if __name__ == '__main__':
