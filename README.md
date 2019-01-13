@@ -31,6 +31,11 @@ some demo of flask (python web framework) study
 
 * 11.[Flask-Blog](/11.flask-blog) - a blog web program build by Flask
 
+* 12.[Flask-Crawl](/12.flask-crawl) - crawl data from network by Flask with scrapy, BeautifulSoup
+
+* 13.[Flask-Logging](/13.flask-logging) - add log for Flask
+
+* 14.[Flask-JWT](/14.flask-jwt) -  use jwt in Authorization for flask
 
 ## reference
 

@@ -33,8 +33,8 @@ def send_email(to, subject):
     msg = Message(prefix, sender=app.config['FLASK_MAIL_SENDER'], recipients=[to])
     msg.body = "testing"
     msg.html = "<b>testing</b>"
-    # msg.body = render_template(template + '.txt', **kwargs)
-    # msg.html = render_template(template + '.html', **kwargs)
+    # msg.body = render_template(templates + '.txt', **kwargs)
+    # msg.html = render_template(templates + '.html', **kwargs)
     mail.send(msg)
 
 
