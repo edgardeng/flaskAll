@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title> Login </title>
+        <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+        function login() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            let user = { username, password }
+            let data = JSON.stringify(user);
+            $.ajax({
+                url:"/auth",
+                type: "POST",
+                data: data,
+                async: false,
+                dataType: "JSON",
+                contentType: "application/json",
+                success: function(result) {
+                    var token = result.access_token;
+                    if (token) {
+                        window.location.href="/?access_token=" + token;
+                    }
+                    console.log(result)
+                }
+            })
+        }
+        </script>
+    </head>
+    <body>
+    <div>
+  Username: <input type="text" name="username" id="username"/>
+  Password: <input type="text" name="password" id="password"/>
+        <button type="submit" onclick="login()">登录</button>
+
+</div>
+    </body>
+</html>
