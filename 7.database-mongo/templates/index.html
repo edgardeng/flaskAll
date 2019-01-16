@@ -6,10 +6,10 @@
 
     <script >
     function onShow(id) {
-                $.ajax({url:"/api/user/" + id,success:function(result) {
+                $.ajax({url:"/api/student/" + id,success:function(result) {
                     console.log(result);
-                    var user = result.user;
-                    var info = '<p class="text-success">'+ user.id+ ', ' + user.name + ', ' + user.email + '</p>';
+                    var student = result.student;
+                    var info = '<p class="text-success">'+ student.id+ ', ' + student.name + ', ' + student.email + '</p>';
                      console.log(info);
                     $("#modalBody").html(info);
                     $('#myModal').modal('show');
@@ -17,14 +17,14 @@
 	};
 
     function clickDelete(id) {
-        window.userId = id
+        window.studentId = id
         $.ajax({
-            url:"/api/user/" + id,
+            url:"/api/student/" + id,
             type:"GET",
             dataType:"json",
             success:function(result) {
-                var user = result.user;
-                var info = '是否删除' + user.name + '（' + user.email + '）?';
+                var student = result.student;
+                var info = '是否删除' + student.name + '（' + student.email + '）?';
                 $("#modalBody").html(info);
                 $('#myModal').modal('show');
             }
@@ -32,15 +32,15 @@
     };
 
     function onDelete() {
-        var id = window.userId;
+        var id = window.studentId;
         $.ajax({
-            url:"/api/user/" + id,
+            url:"/api/student/" + id,
             type:"DELETE",
             dataType:"json",
             success:function(result) {
                 if (result.result) {
                     $('#myModal').modal('hide');
-                    $("#user" + id ).remove();
+                    $("#student" + id ).remove();
                 }
             }
         })
@@ -54,28 +54,32 @@
 
 <div class="container">
     <div style="text-align:right;padding: 1rem;">
-        <a type="submit" class="btn btn-success" href="/user">添加</a>
+        <a class="btn btn-success" role="button" aria-pressed="true" href="/student">添加</a>
     </div>
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th scope="col">#</th>
+            <th scope="col">Student</th>
             <th scope="col">Name</th>
-            <th scope="col">Phone</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Age</th>
+            <th scope="col">Grade</th>
             <th scope="col">操作</th>
         </tr>
         </thead>
         <tbody id="listBody">
 
-        {% for user in users %}
+        {% for student in students %}
 
-        <tr id="user{{user.id}}">
-            <th scope="row">{{user.id}}</th>
-            <td>{{user.name}}</td>
-            <td>{{user.email}}</td>
+        <tr id="student{{student.id}}">
+            <th scope="row">{{student.id}}</th>
+            <td>{{student.name}}</td>
+            <td>{{student.gender}}</td>
+            <td>{{student.age}}</td>
+            <td>{{student.grade.name}}</td>
             <td>
-                <a type="submit" class="btn btn-primary" href="/user/{{user.id}}">修改</a>
-                <button type="submit" class="btn btn-danger" onclick="clickDelete('{{user.id}}')">删除</button>
+                <a class="btn btn-primary" role="button" href="/student/{{student.id}}">修改</a>
+                <button type="submit" class="btn btn-danger" onclick="clickDelete('{{student.id}}')">删除</button>
             </td>
         </tr>
 
@@ -83,6 +87,34 @@
 
         </tbody>
     </table>
+    <div class="mt-5"> </div>
+     <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">Grade</th>
+            <th scope="col">Name</th>
+            <th scope="col">Updated_At</th>
+            <th scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody >
+
+        {% for grade in grades %}
+
+        <tr id="grade{{grade.id}}">
+            <th scope="row">{{grade.id}}</th>
+            <td>{{grade.name}}</td>
+            <td>{{grade.updated_at}}</td>
+            <td>
+                **
+            </td>
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
 </div>
 
 

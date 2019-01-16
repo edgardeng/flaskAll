@@ -2,9 +2,9 @@
 
 {% block head %}
 
-    {{super()}}
+{{super()}}
 
-    <script >
+<script>
 
     function update(id) {
         var name = $("#name").val();
@@ -12,42 +12,45 @@
             $('#message').html('please input name');
             return;
         }
-        var email = $("#email").val();
-        if (email.length < 1) {
+        var age = $("#age").val();
+        if (age.length < 1) {
             $('#message').html('please input email');
             return;
         }
+        var gender = $("input[name='genderRadios']:checked").val();
+        var grade = $("input[name='gradeRadios']:checked").val();
+
         $('#message').empty();
-        let user = {
-            name, email
+        let student = {
+            name, age, gender, grade
         }
-        let data = JSON.stringify(user);
+        let data = JSON.stringify(student);
         if (id) {
             $.ajax({
-                url:"/api/user/" + id,
+                url:"/api/student/" + id,
                 type: "PUT",
                 data: data,
                 async: false,
                 dataType: "JSON",
                 contentType: "application/json",
                 success: function(result) {
-                    var user = result.user;
-                    if (user) {
+                    var student = result.student;
+                    if (student) {
                          window.location.href="/"
                     }
                 }
             })
         } else {
             $.ajax({
-                url:"/api/user",
+                url:"/api/student",
                 type: "POST",
                 data: data,
                 async: false,
                 dataType: "JSON",
                 contentType: "application/json",
                 success: function(result) {
-                    var user = result.user;
-                    if (user) {
+                    var student = result.student;
+                    if (student) {
                         window.location.href="/"
                     }
                 }
@@ -55,7 +58,8 @@
         }
     };
 
-    </script>
+
+</script>
 {% endblock %}
 
 
@@ -67,7 +71,7 @@
 <div class="container">
     <div class="panel panel-default" style="margin-top:2rem;">
         <div class="panel-heading">
-            {% if user %} 修改用户
+            {% if student %} 修改用户
             {% else %} 新增用户
             {% endif %}
         </div>
@@ -77,22 +81,57 @@
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name"
-                    {% if user %} value="{{user.name}}" {% endif %}
+                           {% if student %} value="{{student.name}}" {% endif %}
                     >
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input type="email" class="form-control" id="email" name="email"
-                    {% if user %} value="{{user.email}}" {% endif %}
-                    >
+                    <label>Gender</label>
+                    <div>
+                        <input  type="radio" name="genderRadios" id="genderRadio" value="female"
+                               checked>
+                        <label style="width:160px;" for="genderRadio">
+                            female
+                        </label>
+
+                        <input  type="radio" name="genderRadios" id="genderRadio" value="male">
+                        <label style="width:160px;" for="genderRadio">
+                            male
+                        </label>
+                    </div>
                 </div>
 
-                <a type="submit" class="btn btn-default" href="/">取消</a>
-                {% if user %}
-                <button type="submit" class="btn btn-primary "  onclick="update('{{user.id}}')">修改</button>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" class="form-control" id="age" name="age"
+                           {% if student %} value="{{student.age}}" {% endif %}
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label>Grade</label>
+
+                    <div>
+                        {% for grade in grades %}
+                        <input  type="radio" name="gradeRadios" id="gradeRadio" value="{{grade.id}}"
+                               checked>
+                        <label style="width:160px;" for="gradeRadio">
+                            {{grade.name}}
+                        </label>
+
+        {% endfor %}
+
+
+                    </div>
+                </div>
+                
+
+
+                <a class="btn btn-default" role="button" href="/">取消</a>
+                {% if student %}
+                <button type="submit" class="btn btn-primary " onclick="update('{{student.id}}')">修改</button>
                 {% else %}
-                <button type="submit" class="btn btn-primary "  onclick="update()">新增</button>
+                <button type="submit" class="btn btn-primary " onclick="update()">新增</button>
                 {% endif %}
 
             </div>
