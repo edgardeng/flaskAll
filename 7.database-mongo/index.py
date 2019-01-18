@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, abort
 from flask_bootstrap import Bootstrap
 from flask_mongoengine import MongoEngine
 from bson import ObjectId
-from mongoengine import StringField, DateTimeField, ListField, ReferenceField, IntField
+from mongoengine import StringField, DateTimeField, ListField, ReferenceField, IntField, PULL
 from flask_debugtoolbar import DebugToolbarExtension
 import datetime
 
@@ -20,7 +20,6 @@ bootstrap = Bootstrap(app)
 db = MongoEngine(app)
 
 app.debug = True
-# app.config['DEBUG_TB_PANELS'] = ['flask_mongoengine.panels.MongoDebugPanel']
 toolbar = DebugToolbarExtension(app)
 
 
@@ -28,7 +27,7 @@ class Grade(db.Document):
     # meta = {} # {"db_alias": "user-db", 'collection': 'grade_2'}
     name = StringField(max_length=16, required=True)
     updated_at = DateTimeField(default=datetime.datetime.now)
-    student = ListField(ReferenceField('Student'))
+    students = ListField(ReferenceField('Student'))
 
     def __str__(self):
         return "name:%s,updated_at:%s" % (self.name, self.updated_at)
@@ -93,6 +92,8 @@ def add_student():
     student = Student(name=name, age=age, gender=gender)
     student.grade = ObjectId(json['grade'])
     student.save()
+    one_grade = Grade(id=json['grade'])
+    one_grade.update(push__students=[student]) # push item in list
     return jsonify({'student': student}), 200
 
 
@@ -106,7 +107,13 @@ def update_student(student_id):
     json = request.json
     if 'name' not in json or 'age' not in json or 'gender' not in json or 'grade' not in json:
         abort(400)
-    result = student.update(name=json['name'], age=json['age'], gender=json['gender'], grade=ObjectId(json['grade']))
+    grade_id = ObjectId(json['grade'])
+    if student.grade.id == grade_id:
+        result = student.update(name=json['name'], age=json['age'], gender=json['gender'])
+    else:
+        result = student.update(name=json['name'], age=json['age'], gender=json['gender'], grade=grade_id)
+        Grade.objects(id=student.grade.id).update_one(pull__students=student)  # Remove
+        Grade.objects(id=grade_id).update_one(push__students=student)  # Add
     return jsonify({'student': result})
 
 
@@ -115,8 +122,22 @@ def delete_student(student_id):
     student = Student.objects(id=student_id).first()
     if not student:
         abort(404)
+    Grade.objects(id=student.grade.id).update_one(pull__students=student) # Remove
     student.delete()
     return jsonify({'result': True})
+
+
+@app.route('/api/grades', methods=['GET'])
+def get_grades():
+    all_grade = Grade.objects().all()
+    # return jsonify({'grades': all_grade})
+    return all_grade.to_json()
+
+
+@app.route('/api/grade/<grade_id>', methods=['GET'])
+def get_grade(grade_id):
+    one_grade = Grade.objects(id=grade_id).first()
+    return jsonify(one_grade)
 
 
 if __name__ == '__main__':

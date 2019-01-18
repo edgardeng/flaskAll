@@ -76,7 +76,9 @@
             <td>{{student.name}}</td>
             <td>{{student.gender}}</td>
             <td>{{student.age}}</td>
+            {% if student.grade %}
             <td>{{student.grade.name}}</td>
+            {% endif %}
             <td>
                 <a class="btn btn-primary" role="button" href="/student/{{student.id}}">修改</a>
                 <button type="submit" class="btn btn-danger" onclick="clickDelete('{{student.id}}')">删除</button>

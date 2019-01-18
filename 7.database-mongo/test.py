@@ -40,8 +40,14 @@ list_student_2 = [
 ]
 col_student = db["student"]
 col_student.drop()
-col_student.insert_many(list_student_1)
-col_student.insert_many(list_student_2)
+
+insert_student_1 = col_student.insert_many(list_student_1)
+insert_student_2 = col_student.insert_many(list_student_2)
+
+# put student in grade
+col_grade.update_one({"_id": grade_1_id}, {"$set": {"students": insert_student_1.inserted_ids}})
+col_grade.update_one({"_id": grade_2_id}, {"$set": {"students": insert_student_2.inserted_ids}})
+
 
 print("查询数据...")
 
