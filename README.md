@@ -37,6 +37,10 @@ some demo of flask (python web framework) study
 
 * 14.[Flask-JWT](/14.flask-jwt) -  use jwt in Authorization for flask
 
+* 15.[Flask-Redis](/15.flask-redis) -  cache usage in flask
+
+* 16.[Flask-Schedule](/16.flask-schedule) -  task schedule in flask
+
 ## reference
 
 * [Flask](http://flask.pocoo.org/) Website

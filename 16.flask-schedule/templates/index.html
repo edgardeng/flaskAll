@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    <title> Flask - All from https://github.com/edgardeng </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <link type="favicon" rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>Flask Scheduler</h2>
+        <p class="lead">add, delete , stop job for app </p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 order-md-2 mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Your Jobs</span>
+            </h4>
+            <ul class="list-group mb-3">
+
+                {% for job in jobs %}
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    {% if 'running' in job.status %} <div class="text-success">
+                    {% else %} <div class="text-muted">
+                    {% endif %}
+                        <h5 class="m-1">{{job.func}}</h5>
+                        <span class="rounded text-warning border border-warning p-1"> {{job.trigger}} </span>
+                        <small class="ml-1">{{job.status}}</small>
+                    </div>
+                    <span class="text-muted">
+                        {% if 'running' in job.status %} <a href="/scheduler/pause/{{job.id}}" role="button" class="btn btn-link btn-sm">Pause</a>
+                    {% else %} <a href="/scheduler/resume/{{job.id}}" role="button" class="btn btn-link btn-sm">Resume</a>
+                    {% endif %}
+                        <br>
+                        <a href="/scheduler/delete/{{job.id}}" role="button" class="btn btn-link btn-sm text-danger">Delete</a>
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-8 order-md-1">
+            <h4 class="mb-3">A ddd Job</h4>
+            <form class="needs-validation">
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="func">Country</label>
+                        <select class="custom-select d-block w-100" id="func" required="">
+                            <option value="">Choose...</option>
+                            {% for func in funcs %}
+                            <option>{{func}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid country.
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="param">Param</label>
+                        <input type="text" class="form-control" id="param" placeholder="">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="seconds">Interval</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="seconds" aria-label="Amount (to the nearest dollar)">
+                            <div class="input-group-append">
+                                <span class="input-group-text">Sec</span>
+                            </div>
+                            <div class="invalid-feedback">
+                                Interval number required.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary btn-lg btn-block" onclick="login()">submit</button>
+            </form>
+            <hr class="mb-4">
+        </div>
+    </div>
+</div>
+
+<script>
+  function login() {
+      var data = {
+        func: $("#func").val(),
+        param: $("#param").val(),
+        seconds: $("#seconds").val()
+      }
+      console.log(data)
+      $.ajax({
+        type: "POST",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        contentType: "application/json",
+        url: "/" ,//url
+        data: JSON.stringify(data),
+        success: function (result) {
+          console.log(result)
+        },
+        error : function() {
+          console.log('error')
+        }
+      })
+    }
+</script>
+
+
+</body>
+
+<script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"> </script>
+<script lang="javascript">
+
+</script>
+</html>
