@@ -4,7 +4,7 @@
 @date: 2019-06-21
 @author: edgardeng
 
--- demo for flask scheduler
+-- demo for flask scheduler (flask-1.1.2 , flask-apscheduler-1.11.0  )
 
 """
 
@@ -90,7 +90,9 @@ def dict_job(kwargs):
     }
     if 'param' in kwargs:
         job['args'] = kwargs['param']
-    return job
+    if 'task_two_param' in job['func']:
+        job['args'] = tuple(job['args'])
+    return job  # change http json param to scheduler JOB
 
 
 def add_interval_task(**kwargs):
@@ -149,5 +151,5 @@ def delete_task(id):
 
 if __name__ == '__main__':
     scheduler.start()
-    add_interval_task(func='index:task_two_param', param=(1, 2), seconds=3)
+    add_interval_task(func='index:task_two_param', param=(1, 2), seconds=3)  # start a interval task when app started
     app.run()

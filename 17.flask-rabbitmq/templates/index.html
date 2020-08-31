@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    <title> Flask - All from https://github.com/edgardeng </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <link type="favicon" rel="shortcut icon" href="favicon.ico">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>Flask RabbitMQ</h2>
+        <p class="lead">add or produce order  for app </p>
+    </div>
+
+    <div class="row">
+        <div class="col-md">
+        <h4 class="mb-3">create a order</h4>
+        <form class="needs-validation">
+            <div class="row">
+                <div class="col-md-5 mb-3">
+                    <label for="name">Country</label>
+                    <select class="custom-select d-block w-100" id="name" required="">
+                        <option value="">Choose...</option>
+                        {% for fruit in fruits %}
+                        <option>{{fruit}}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a valid country.
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="count">Count</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="count" aria-label="Amount (to the nearest dollar)">
+                        <div class="invalid-feedback">
+                            Interval number required.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" onclick="add()">submit</button>
+        </form>
+        <hr class="mb-4">
+    </div>
+        <div class="col-md mb-4">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-muted">Order List</span>
+            </h4>
+            <ul class="list-group mb-3">
+
+                {% for order in orders %}
+                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                    {% if 'complete' in order.status %} <div class="text-success">
+                    {% else %} <div class="text-muted">
+                    {% endif %}
+                        <h5 class="m-1">{{order.name}}</h5>
+                        <span class="rounded text-warning border border-warning p-1"> {{order.count}} </span>
+                        <small class="ml-1">{{order.status}}</small>
+                    </div>
+                    <span class="text-muted">
+                        {% if 'running' in order.status %} <a href="/scheduler/pause/{{order.id}}" role="button" class="btn btn-link btn-sm">Pause</a>
+                    {% else %} <a href="/scheduler/resume/{{order.id}}" role="button" class="btn btn-link btn-sm">Resume</a>
+                    {% endif %}
+                        <br>
+                        <a href="/scheduler/delete/{{order.id}}" role="button" class="btn btn-link btn-sm text-danger">Delete</a>
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+</body>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script lang="javascript">
+    function add() {
+        var data = {
+            name: $("#name").val(),
+            count: $("#count").val()
+        }
+        console.log(data)
+        $.ajax({
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            contentType: "application/json",
+            url: "/" ,//url
+            data: JSON.stringify(data),
+            success: function (result) {
+                console.log(result)
+            },
+            error : function() {
+                console.log('error')
+            }
+        })
+    }
+</script>
+</html>
