@@ -61,13 +61,6 @@
                         <span class="rounded text-warning border border-warning p-1"> {{order.count}} </span>
                         <small class="ml-1">{{order.status}}</small>
                     </div>
-                    <span class="text-muted">
-                        {% if 'running' in order.status %} <a href="/scheduler/pause/{{order.id}}" role="button" class="btn btn-link btn-sm">Pause</a>
-                    {% else %} <a href="/scheduler/resume/{{order.id}}" role="button" class="btn btn-link btn-sm">Resume</a>
-                    {% endif %}
-                        <br>
-                        <a href="/scheduler/delete/{{order.id}}" role="button" class="btn btn-link btn-sm text-danger">Delete</a>
-                    </span>
                 </li>
                 {% endfor %}
             </ul>

@@ -25,12 +25,8 @@ def rabbit_connection():
 
 
 app = Flask(__name__)
-#   app = Flask(__name__, instance_relative_config=True, instance_path=_default_instance_path)
-# app.config.from_pyfile('dev.py')
-# app.register_blueprint(rabbit.rabbit_blueprint, url_prefix='/rabbit')
 orders = []
 fruits = ['apple', 'pear', 'others']
-fruits_ok = ['apple', 'pear']
 QUEUE_FRUIT_ORDER = 'queue_fruit_order'
 
 
@@ -49,6 +45,19 @@ def order_add():
   return render_template('index.html', funcs=fruits, jobs=orders)
 
 
+@app.route('/callback', methods=['POST'])
+def order_callback():
+  order = request.json
+  print('order_callback', order)
+  for i in orders:
+    if i['id'] == order['id']:
+      orders[orders.index(i)] = order
+      # i['status'] = order['status']
+      return 'success'
+  orders.append(request.json)
+  return 'success'
+
+
 def add_order(**kwargs):
   id = str(uuid.uuid1())[:8]
   order = {
@@ -64,58 +73,7 @@ def add_order(**kwargs):
   print(' [x] Sent %r' % order)
   connection.close()
 
-def callback_add_order(ch, method, properties, body):
-    print(' [x] Received %r' % body)
-    # time.sleep(2)
-    print('callback done')
-    ch.basic_ack(delivery_tag=method.delivery_tag)  # use basic_ak() when no_ack ==False
-  # if order['name'] not in fruits_ok:
-  #   order['status'] = 'cancelled' # 无法生产
-  # else:
-  #   # 加入生产消息队列
-  #   pass
-  # orders.append(order) # 加入内存
 
-
-# async def hello_world_usage():
-#   connection = rabbit_connection()
-#   channel = connection.channel()
-#   channel.queue_declare(QUEUE_FRUIT_ORDER)
-#   channel.basic_consume(QUEUE_FRUIT_ORDER, callback_add_order, False)
-#   # print(' [*] Waiting for messages. To exit press CTRL+C')
-#   await channel.start_consuming()
-
-
+# run this after run consumer.py
 if __name__ == '__main__':
   app.run()
-
-
-# '''视图函数 - rabbit.py'''
-# from flask import Blueprint
-# from flask_restful import Resource
-#
-# from extensions import fpika
-# from tasks import task0
-#
-# from . import Api
-
-# '''视图函数 - rabbit.py'''
-#
-# rabbit_blueprint = Blueprint('rabbit', __name__)
-# rabbit_api = Api(rabbit_blueprint)
-#
-#
-# class Producer(Resource):
-#   def get(self):
-#     print('Producer')
-#     channel = fpika.channel()
-#     channel.queue_declare(queue='test')
-#     channel.basic_publish(exchange='', routing_key='test', body='hello pika')
-#     # 将通道还给池
-#     # return_broken_channel 在该框架下使用解决队列堵塞问题，详见下方分析
-#     fpika.return_broken_channel(channel)
-#     fpika.return_channel(channel)
-#     return 'Producer'
-#
-#
-# rabbit_api.add_resource(Producer, '/Producer')
