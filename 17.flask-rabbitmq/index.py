@@ -4,12 +4,12 @@
 @date: 2020-08-31
 @author: edgardeng
 
--- demo for flask with rabbitMQ (flask-1.1.2 , flask-apscheduler-1.11.0  )
+-- demo for flask with rabbitMQ (flask-1.1.2 ,pika-1.1.0  )
 
 """
 import json
 
-from flask import Flask,render_template, jsonify, redirect, request
+from flask import Flask,render_template, jsonify, request
 import pika
 import uuid
 

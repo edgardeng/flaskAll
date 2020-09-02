@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    <title> Flask - All from https://github.com/edgardeng </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <link type="favicon" rel="shortcut icon" href="favicon.ico">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .progress {
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>Flask + Celery Examples</h2>
+        <p class="lead">add or produce order  for app </p>
+    </div>
+    <h2>Example 1: Send Asynchronous Email</h2>
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-info" role="alert">
+        {{ message }}
+    </div>
+
+    {% endfor %}
+    <form method="POST" >
+        <div class="form-group">
+            <label for="exampleInputEmail1">Send test email to:</label>
+            <input type="email" name="email" value="{{ email }}" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        </div>
+        <input type="submit" name="submit" value="Send" class="btn btn-primary">
+        <input type="submit" name="submit" value="Send in 1 minute" class="btn btn-primary">
+    </form>
+    <hr>
+
+    <h2 class="mt-3">Example 2: Long running task with progress updates</h2>
+    <button id="start-bg-job" class="btn btn-primary">Start Long Calculation</button><br><br>
+    <div id="progress"> </div>
+</div>
+
+</body>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/nanobar/0.4.2/nanobar.min.js"></script>
+
+<script>
+    function start_long_task() {
+        // add task status elements
+        let div_new = $('<div class="progress mt-2"><div class="progress-bar" role="progressbar" style="width: 10%;" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">10%</div></div>')
+        $('#progress').append(div_new);
+        $.ajax({
+            type: 'POST',
+            url: '/create_task',
+            success: function(data, status, request) {
+                status_url = request.getResponseHeader('Location');
+                update_progress(status_url, div_new[0]);
+            },
+            error: function() {
+                alert('Unexpected error');
+            }
+        });
+    }
+    function update_progress(status_url, status_div) {
+        // send GET request to status URL
+        $.getJSON(status_url, function(data) {
+            let current = parseInt(data['current'] * 100 / data['total'])
+            $(status_div.children[0]).attr("aria-valuenow",current);
+            $(status_div.children[0]).css("width","" + current + "%").text(data['state'] + ":" + current + "%");
+            if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
+                if ('result' in data) {
+                    $(status_div.children[0]).text(data['result'] + ":" + current + "%")
+                }
+                else {
+                    $(status_div.children[0]).text(data['state'] + ":" + current + "%")
+                }
+            }
+            else {
+                // rerun in 2 seconds
+                setTimeout(function() {
+                    update_progress(status_url, status_div);
+                }, 1000);
+            }
+        });
+    }
+    $(function() {
+        $('#start-bg-job').click(start_long_task);
+    });
+</script>
+</html>
