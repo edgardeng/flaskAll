@@ -101,7 +101,7 @@ secret)
 
 ## Flask-JWT
 
-> Flask-JWT¶
+> Flask-JWT
 Add basic JWT features to your Flask application.
 
 1. install

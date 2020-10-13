@@ -43,7 +43,7 @@ FLask-SQLAlchemy数据库URL
 * SQLite(Unix)      sqlite:////absolute/path/to/database
 * SQLite(Windows)   sqlite:///c:/absolute/path/to/database
 
-### SQLAlchemy的 常见参数
+### SQLAlchemy 的 常见参数
 选择项	说明
 autoincrement	True 是否自增
 primary_key	True 是否是主键

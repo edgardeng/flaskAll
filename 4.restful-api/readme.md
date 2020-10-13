@@ -55,15 +55,14 @@ URL 映射中的 HEAD、Options、GET 是请求方法，由路由进行处理。
 在请求开始时，我们可能需要创建数据库连接或者认证发起请求的用户。
 为了避免在每个视图函数中都使用重复的代码， Flask 提供了注册通用函数的功能，注册的函数可在请求被分发到视图函数之前或之后 调用。
 
-Flask 支持以下 4 种钩子。
-• before_first_request:注册一个函数，在处理第一个请求之前运行。
-• before_request:注册一个函数，在每次请求之前运行。
-• after_request:注册一个函数，如果没有未处理的异常抛出，在每次请求之后运行。
-• teardown_request:注册一个函数，即使有未处理的异常抛出，也在每次请求之后运行。
+Flask 支持以下 4 种钩子
 
+* before_first_request:注册一个函数，在处理第一个请求之前运行。
+* before_request:注册一个函数，在每次请求之前运行。
+* after_request:注册一个函数，如果没有未处理的异常抛出，在每次请求之后运行。
+* teardown_request:注册一个函数，即使有未处理的异常抛出，也在每次请求之后运行。
 
 在请求钩子函数和视图函数之间共享数据一般使用上下文全局变量 g。例如，before_ request 处理程序可以从数据库中加载已登录用户，并将其保存到 g.user 中。随后调用视 图函数时，视图函数再使用 g.user 获取用户。
-
 
 ### 响应
 Flask 调用视图函数后，会将其返回值作为响应的内容。
@@ -81,6 +80,7 @@ HTTP 协议需要的不仅是作为请求响应的字符串。HTTP 响应中一�
 如果不想返回由 1 个、2 个或 3 个值组成的元组，Flask 视图函数还可以返回 Response 对象。
 make_response() 函数可接受 1 个、2 个或 3 个参数(和视图函数的返回值一样)，并返回一个 Response 对象。
 有时我们需要在视图函数中进行这种转换，然后在响应对象上调 用各种方法，进一步设置响应。下例创建了一个响应对象，然后设置了 cookie:
+
 ```
 from flask import make_response
      @app.route('/')
@@ -104,18 +104,18 @@ return redirect('http://www.example.com')
 还有一种特殊的响应由 abort 函数生成，用于处理错误。
 
 动态参数 id 对应的用户不存在，就返回状态码 404:
+
 ```
- from flask import abort
-     @app.route('/user/<id>')
-     def get_user(id):
-         user = load_user(id)
-         if not user:
-abort(404)
-return '<h1>Hello, %s</h1>' % user.name
+from flask import abort
+@app.route('/user/<id>')
+def get_user(id):
+    user = load_user(id)
+    if not user:
+        abort(404)
+    return '<h1>Hello, %s</h1>' % user.name
 ``` 
 
 注意，abort 不会把控制权交还给调用它的函数，而是抛出异常把控制权交给 Web服务器
-
 
 ## Flask中的路由
 
@@ -128,7 +128,6 @@ return '<h1>Hello, %s</h1>' % user.name
 2.如果路由中的URL规则结尾不带斜杠的，但是用户请求时带了斜杠，那么就会返回404错误响应。
 
 3.还可以为同一个视图函数，定义多个URL规则：
-
 
 ```python
 @app.route('/')
@@ -148,7 +147,6 @@ def show_post(post_id):
 def show_users(page):
     pass
 ```
-
 
 ## REST
 六条设计规范定义了一个 REST 系统的特点:
@@ -247,4 +245,3 @@ def delete_user(user_id):
 ## 更多参考
 
 * [flask-restful](http://www.pythondoc.com/flask-restful/)
-

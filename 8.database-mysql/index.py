@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://test:123456@localhost:3
 app.config['SQLALCHEMY_COMMIT_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
-db = SQLAlchemy(app) #获取SQLAlchemy实例对象
+db = SQLAlchemy(app) # 获取SQLAlchemy实例对象
 
 
 class Role(db.Model):
