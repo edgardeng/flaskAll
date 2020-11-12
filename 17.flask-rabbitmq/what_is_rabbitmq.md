@@ -1,14 +1,11 @@
 # RabbitMQ
-
 > 消息队列（MQ）是一种应用程序对应用程序的通信方法。MQ是消费-生产者模型的一个典型的代表，一端往消息队列中不断写入消息，而另一端则可以读取队列中的消息
 
 RabbitMQ是一个在AMQP基础上完成的，可复用的企业消息系统，遵循Mozilla Public License开源协议
 
 AMQP （Advanced Message Queue Protocol） 一个提供统一消息服务的应用层标准高级消息队列协议。是应用协议的一个开发标准，为面向消息的中间件。
-基于此协议，客服端与消息中间件可传递消息，并不受客服端/中间件不同产品，不同开发语言邓条件的限制
+基于此协议，客服端与消息中间件可传递消息，并不受客服端/中间件不同产品，不同开发语言等条件的限制
 
-
-      
 ## 安装
 
 ### Linux安装RabbitMQ
@@ -82,7 +79,6 @@ make install
 
 5. 启动容器: docker stop rabbitM
 
-
 ## RabbitMQ 的管理
 
 ### 用户 Users
@@ -90,14 +86,15 @@ make install
 进入 http://localhost:15672/#/users 进行设置
 
 用户权限（级别）
+
 |TAG| 名称|说明|
+|:----|:----|:----|
 |Admin|超级管理员|查看所有信息|
 |Monitoring|监控者|可登陆控制台，查看节点信息，|
 |Policymaker|策略制定者|可登陆控制台，制定策略，无法查看节点|
 |Management|普通管理员|仅能登陆控制台|
 |Impersonator| - |:----|
 |None|其他|无法登录控制台，一般提供者，消费者|
-
 
 ### 虚拟主机 vhost
 

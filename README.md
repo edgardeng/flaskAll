@@ -41,9 +41,9 @@ some demo of flask (python web framework) study
 
 * 16.[Flask-Schedule](/16.flask-schedule) -  task schedule in flask
 
-* 17.[Flask-RabbitMQ](/16.flask-schedule) -  use RabbitMQ in flask
+* 17.[Flask-RabbitMQ](/17.flask-rabbitmq) -  use RabbitMQ in flask
 
-* 18.[Flask-Celery](/16.flask-schedule) -  use Celery in flask
+* 18.[Flask-Celery](/18.flask-celery) -  use Celery in flask
 
 
 ## reference
