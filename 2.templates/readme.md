@@ -24,23 +24,26 @@ templates/index.html
 ```
 
 Flask 提供的 render_template 函数把 Jinja2 模板引擎集成到了程序中。
-render_template 函数的第一个参数是模板的文件名。随后的参数都是键值对，表示模板中变量对应的真实值。
+
+render_template 函数的第一个参数是模板的文件名。
+随后的参数都是键值对，表示模板中变量对应的真实值。
+
 如上述代码中，左边的“name”表示参数名，就是模板中使用的占位符;右 边的“name”是当前作用域中的变量，表示同名参数的值。
 
 ### 模版中的变量
 
-    Jinja2 能识别所有类型的变量，甚至是一些复杂的类型，例如列表、字典和对象。在模板 中使用变量的一些示例如下:
-```
-    <p>A value from a dictionary: {{ mydict['key'] }}.</p>
-    <p>A value from a list: {{ mylist[3] }}.</p>
-    <p>A value from a list, with a variable index: {{ mylist[myintvar] }}.</p>
-    <p>A value from an object's method: {{ myobj.somemethod() }}.</p>
+Jinja2 能识别所有类型的变量，甚至是一些复杂的类型，例如列表、字典和对象。在模板 中使用变量的一些示例如下:
+```html
+ <p>A value from a dictionary: {{ mydict['key'] }}.</p>
+ <p>A value from a list: {{ mylist[3] }}.</p>
+ <p>A value from a list, with a variable index: {{ mylist[myintvar] }}.</p>
+ <p>A value from an object's method: {{ myobj.somemethod() }}.</p>
 ```
 
 #### 使用过滤器修改变量
 过滤器名添加在变量名之后，中间使用竖线分隔。
-```
-    <p>Hello, {{ name|capitalize }}</p>
+```html
+ <p>Hello, {{ name|capitalize }}</p>
 ```
 
 Jinja2变量过滤器:
@@ -56,7 +59,7 @@ Jinja2变量过滤器:
 
 #### 模版中的 控制结构
 
-```
+```html
 {% if user %}
 Hello, {{ user }}!
 {% else %}
@@ -64,7 +67,7 @@ Hello, Stranger!
 {% endif %}
 ```
 
-```
+```html
 <ul>
 {% for comment in comments %}
 <li>{{ comment }}</li>
@@ -73,7 +76,7 @@ Hello, Stranger!
 ```
 
 inja2 还支持宏。宏类似于 Python 代码中的函数。例如:
-```
+```html
 {% macro render_comment(comment) %} <li>{{ comment }}</li>
 {% endmacro %}
 <ul>
@@ -82,7 +85,7 @@ inja2 还支持宏。宏类似于 Python 代码中的函数。例如:
 </ul>
 ```
 为了重复使用宏，将其保存在单独的文件中，然后导入:
-```
+```html
 {% import 'macros.html' as macros %} <ul>
 {% for comment in comments %}
 {{ macros.render_comment(comment) }}
@@ -91,7 +94,7 @@ inja2 还支持宏。宏类似于 Python 代码中的函数。例如:
 
 模版继承
 创建一个名为 base.html 的基模板: 22 | 第3章
-```
+```html
 <html>
      <head>
 {% block head %}
@@ -106,7 +109,7 @@ block 标签定义的元素可在衍生模板中修改。在本例中，我们�
 body 的块。注意，title 包含在 head 中。
 
 下面这个示例是基模板的衍生模板:
-```
+```html
 {% extends "base.html" %}
 {% block title %}Index{% endblock %} {% block head %}
          {{ super() }}
