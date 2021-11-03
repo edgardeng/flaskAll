@@ -1,0 +1,21 @@
+<!--文件位置：templates/socketio/socketio_index.html-->
+{% extends 'socketio_base.html' %}
+
+{% block title %}首页-BBS论坛{% endblock %}
+
+{% block head %}<script src="{{ url_for('static', filename='main.js') }}"></script>{% endblock %}
+
+{% block chat %}
+
+<div >
+    <textarea type="text" class="form-control" id="textarea1"></textarea>
+</div>
+<div >
+    <input type="text" class="form-control inputbox" id="message" name="message" placeholder="消息">
+    <button class="btn btn-warning btn-block sendbtn" id="submit-btn" onclick="send()">发送消息</button>
+</div>
+<div>
+    <button class="btn btn-warning btn-block sendbtn" id="online-chat-btn" onclick="start_chat_online()">视频聊天</button>
+    <video id="local_video" ></video>
+</div>
+{% endblock %}
