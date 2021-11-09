@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>WebRTC Demo</title>
+    <style lang="text/css">
+        body {
+            font-family: sans-serif;
+        }
+
+        video {
+            max-width: 100%;
+            width: 320px;
+        }
+
+        #buttons {
+            margin-bottom: 20px;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+<h1>WebRTC Demo</h1>
+
+<div class="videos">
+    <div>
+        <video id="localVideo" autoplay muted playsinline></video>
+    </div>
+</div>
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.1.3/socket.io.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/adapterjs/0.15.5/adapter.min.js"></script>
+<script src="{{url_for('static', filename='multiple.js')}}"></script>
+</body>
+
+</html>

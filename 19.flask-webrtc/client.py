@@ -5,12 +5,10 @@
 # python-socketio-5.4.1
 #
 import random
-
 import socketio
 
 # standard Python
 sio = socketio.Client()
-
 
 # asyncio
 # sio = socketio.AsyncClient()
